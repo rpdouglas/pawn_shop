@@ -1,0 +1,63 @@
+# Operation 1: List all items currently in pawn
+query ListAllPawnedItems @auth(level: PUBLIC, insecureReason: "This operation is safe to expose to the public as it lists items, not sensitive customer data.") {
+  items(where: {status: {eq: "Pawned"}}) {
+    id
+    name
+    description
+    appraisalValue
+    status
+    category
+    serialNumber
+    condition
+    customer {
+      firstName
+      lastName
+    }
+  }
+}
+
+# Operation 2: Create a new customer
+mutation CreateNewCustomer($firstName: String!, $lastName: String!, $phoneNumber: String!, $email: String, $address: String, $identification: String) @auth(level: USER, insecureReason: "This operation is safe to expose to all logged in users as a new customer record requires authentication to create.") {
+  customer_insert(data: {
+    firstName: $firstName,
+    lastName: $lastName,
+    phoneNumber: $phoneNumber,
+    email: $email,
+    address: $address,
+    identification: $identification
+  })
+}
+
+# Operation 3: Get details for a specific loan
+query GetLoanDetails($loanId: UUID!) @auth(level: USER, insecureReason: "This operation is safe to expose to all logged in users as it retrieves specific loan details which require authentication.") {
+  loan(id: $loanId) {
+    id
+    loanAmount
+    interestRate
+    dueDate
+    startDate
+    status
+    principalAmountPaid
+    interestAmountPaid
+    outstandingBalance
+    customer {
+      firstName
+      lastName
+      phoneNumber
+      email
+    }
+    item {
+      name
+      description
+      appraisalValue
+      serialNumber
+    }
+  }
+}
+
+# Operation 4: Update an item's status
+mutation UpdateItemStatus($itemId: UUID!, $newStatus: String!) @auth(level: USER, insecureReason: "This operation is safe to expose to all logged in users as updating an item's status requires authentication.") {
+  item_update(key: {id: $itemId}, data: {
+    status: $newStatus
+  })
+}

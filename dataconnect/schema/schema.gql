@@ -1,0 +1,52 @@
+type User @table {
+  displayName: String!
+  email: String!
+  role: String!
+  phoneNumber: String
+  createdAt: Timestamp
+}
+
+type Customer @table {
+  firstName: String!
+  lastName: String!
+  phoneNumber: String!
+  email: String
+  address: String
+  identification: String
+}
+
+type Item @table {
+  name: String!
+  description: String!
+  appraisalValue: Float!
+  status: String!
+  customer: Customer
+  category: String
+  serialNumber: String
+  condition: String
+  imageUrl: String
+}
+
+type Loan @table {
+  loanAmount: Float!
+  interestRate: Float!
+  dueDate: Date!
+  startDate: Date!
+  status: String!
+  customer: Customer!
+  item: Item!
+  principalAmountPaid: Float
+  interestAmountPaid: Float
+  outstandingBalance: Float
+}
+
+type Transaction @table {
+  type: String!
+  amount: Float!
+  transactionDate: Timestamp!
+  processedBy: User!
+  customer: Customer!
+  loan: Loan
+  item: Item
+  notes: String
+}

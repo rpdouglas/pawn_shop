@@ -1,0 +1,112 @@
+mutation CreateDemoData @transaction @auth(level: USER, insecureReason: "This operation is for seeding data only and should be protected in production.") {
+  user1: user_insert(data: {
+    id: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+    displayName: "John Doe",
+    email: "john.doe@example.com",
+    role: "Admin",
+    createdAt: "2023-01-01T10:00:00Z"
+  })
+  user2: user_insert(data: {
+    id: "b1cde000-0d1c-4ff9-cc7e-7cc0ce491b22",
+    displayName: "Jane Smith",
+    email: "jane.smith@example.com",
+    role: "Employee",
+    createdAt: "2023-01-02T11:00:00Z"
+  })
+  customer1: customer_insert(data: {
+    id: "c2def111-1e2d-4ee0-dd8f-8dd1df502c33",
+    firstName: "Alice",
+    lastName: "Johnson",
+    phoneNumber: "555-1111",
+    email: "alice.j@example.com"
+  })
+  customer2: customer_insert(data: {
+    id: "d3ef2222-2f3e-4ff1-ee90-9ee2ef613d44",
+    firstName: "Bob",
+    lastName: "Williams",
+    phoneNumber: "555-2222",
+    email: "bob.w@example.com"
+  })
+  item1: item_insert(data: {
+    id: "e4f03333-304f-4ee2-ff01-0ff3f0724e55",
+    name: "Gold Watch",
+    description: "A vintage gold watch with a leather strap.",
+    appraisalValue: 1500.00,
+    status: "Pawned",
+    customerId: "c2def111-1e2d-4ee0-dd8f-8dd1df502c33",
+    category: "Jewelry",
+    serialNumber: "GW-12345",
+    condition: "Excellent",
+    imageUrl: "https://example.com/goldwatch.jpg"
+  })
+  item2: item_insert(data: {
+    id: "f5014444-4150-4ff3-0012-100401835f66",
+    name: "Diamond Necklace",
+    description: "A beautiful diamond necklace with a silver chain.",
+    appraisalValue: 3000.00,
+    status: "Available for Sale",
+    customerId: "c2def111-1e2d-4ee0-dd8f-8dd1df502c33",
+    category: "Jewelry",
+    serialNumber: "DN-67890",
+    condition: "Good",
+    imageUrl: "https://example.com/diamondnecklace.jpg"
+  })
+  item3: item_insert(data: {
+    id: "16125555-5261-5ff4-1123-211512946a77",
+    name: "Antique Camera",
+    description: "A classic antique camera, fully functional.",
+    appraisalValue: 750.00,
+    status: "Pawned",
+    customerId: "d3ef2222-2f3e-4ff1-ee90-9ee2ef613d44",
+    category: "Electronics",
+    serialNumber: "AC-00112",
+    condition: "Fair",
+    imageUrl: "https://example.com/antiquecamera.jpg"
+  })
+  loan1: loan_insert(data: {
+    id: "27236666-6372-6ff5-2234-322623057b88",
+    loanAmount: 1000.00,
+    interestRate: 0.05,
+    dueDate: "2024-06-01",
+    startDate: "2024-03-01",
+    status: "Active",
+    customerId: "c2def111-1e2d-4ee0-dd8f-8dd1df502c33",
+    itemId: "e4f03333-304f-4ee2-ff01-0ff3f0724e55",
+    principalAmountPaid: 200.00,
+    interestAmountPaid: 5.00,
+    outstandingBalance: 800.00
+  })
+  loan2: loan_insert(data: {
+    id: "38347777-7483-7ff6-3345-433734168c99",
+    loanAmount: 500.00,
+    interestRate: 0.03,
+    dueDate: "2024-07-15",
+    startDate: "2024-04-15",
+    status: "Active",
+    customerId: "d3ef2222-2f3e-4ff1-ee90-9ee2ef613d44",
+    itemId: "16125555-5261-5ff4-1123-211512946a77",
+    principalAmountPaid: 100.00,
+    interestAmountPaid: 3.00,
+    outstandingBalance: 400.00
+  })
+  transaction1: transaction_insert(data: {
+    id: "49458888-8594-8ff7-4456-544845279da0",
+    type: "Loan Payout",
+    amount: 1000.00,
+    transactionDate: "2024-03-01T10:30:00Z",
+    processedById: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+    customerId: "c2def111-1e2d-4ee0-dd8f-8dd1df502c33",
+    loanId: "27236666-6372-6ff5-2234-322623057b88",
+    notes: "Initial loan for Gold Watch"
+  })
+  transaction2: transaction_insert(data: {
+    id: "5a569999-96a5-9ff8-5567-65595638ab11",
+    type: "Payment",
+    amount: 205.00,
+    transactionDate: "2024-04-01T14:00:00Z",
+    processedById: "b1cde000-0d1c-4ff9-cc7e-7cc0ce491b22",
+    customerId: "c2def111-1e2d-4ef8-bb6d-6bb9bd380a11",
+    loanId: "27236666-6372-6ff5-2234-322623057b88",
+    notes: "Monthly payment for Gold Watch loan"
+  })
+}

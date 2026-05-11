@@ -1,0 +1,31 @@
+name: Feature Request
+description: Propose a new feature for The Pawn Shop
+title: "[FEATURE] "
+labels: ["type:feature"]
+body:
+  - type: input
+    id: epic
+    attributes:
+      label: Related Epic
+      description: Which Epic does this belong to? (e.g., E06)
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Clear outline of the feature.
+    validations:
+      required: true
+  - type: dropdown
+    id: views
+    attributes:
+      label: Affected Views
+      multiple: true
+      options:
+        - Pawn
+        - Cannabis
+        - Fireworks
+        - Admin/Staff
+    validations:
+      required: true
