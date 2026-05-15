@@ -1,0 +1,371 @@
+"title","body","labels","milestone","state"
+"M1 — Pipelines & Codespaces","**Gate:** CI must pass on first commit.
+
+Firebase dev/prod deployed. Codespaces verified. CI/CD green. Backup scheduled. Runbook v1 drafted. /docs/ structure committed to repo.
+
+**Sprint:** S1 | **Week:** W2 | **Epic:** E1","type:feature,priority:p0,area:backend","M1 — Pipelines & Codespaces","open"
+"M2 — Three-View Design System","**Gate:** WCAG AA contrast pass on all 3 palettes.
+
+All components in Storybook. Three-view tokens committed. Photography brief + motion spec drafted. WCAG AA verified.
+
+**Sprint:** S3 | **Week:** W6 | **Epic:** E2","type:feature,priority:p0,area:design","M2 — Three-View Design System","open"
+"M3 — Auth & MFA","**Gate:** MFA bypass must be impossible.
+
+Firebase Auth live. MFA enforced for all staff roles. Session management UI live. Audit log writing.
+
+**Sprint:** S4 | **Week:** W8 | **Epic:** E3","type:feature,priority:p0,area:backend","M3 — Auth & MFA","open"
+"M4 — Alpha: Three-View Storefront","**Gate:** Business owner sign-off on visual design + all 8 personas checked.
+
+All 3 view homepages live on dev with real Firestore data. Age gates active. Prefix search working. Mobile-responsive.
+
+**Sprint:** S8 | **Week:** W16 | **Epics:** E5","type:feature,priority:p0,area:frontend,view:pawn,view:cannabis,view:fireworks","M4 — Alpha: Three-View Storefront","open"
+"M5 — eBay & Cross-Post","**Gate:** Sandbox end-to-end test passes.
+
+Staff can push pawn items to eBay. Status syncs back. Cannabis/fireworks use local-pickup-only correctly.
+
+**Sprint:** S9 | **Week:** W18 | **Epic:** E6","type:feature,priority:p1,area:backend","M5 — eBay & Cross-Post","open"
+"M6 — Merchandising Live","**Gate:** Algolia search returns results in < 300ms.
+
+E13 engine live: staff picks, trending, related items, quick-view, collection pages, Algolia. Marcus-grade photography standard active.
+
+**Sprint:** S12 | **Week:** W24 | **Epic:** E13","type:feature,priority:p1,area:search,persona:marcus,persona:sandra,persona:jordan","M6 — Merchandising Live","open"
+"M7 — Beta: Full Feature Set","**Gate:** Internal UAT sign-off from business owner + staff.
+
+Pawn form, click-and-collect, seasonal engine (E14), conversion optimization (E17), CRM basics, compliance hardened. UAT complete.
+
+**Sprint:** S14 | **Week:** W28","type:feature,priority:p0,area:frontend","M7 — Beta: Full Feature Set","open"
+"M8 — AI & Post-Sale","**Gate:** AI description generation tested on 10 real items; Finds of the Week published.
+
+E18 AI assistant live with Marcus-grade provenance copy. E16 post-sale operations. E19 editorial CMS with first 5 articles incl. founder story.
+
+**Sprint:** S16 | **Week:** W32","type:feature,priority:p1,area:ai,persona:marcus,persona:jordan","M8 — AI & Post-Sale","open"
+"M9 — CRM & Retention","**Gate:** autoFollowUp tested; Marcus cross-view journey validated in CRM.
+
+E15 CRM dashboard live. VIP tiers active (Marcus, Kevin, Jordan). E12 alerts, favourites, SMS active. Weekly personalised digest per view running.
+
+**Sprint:** S17 | **Week:** W34","type:feature,priority:p1,area:crm,persona:marcus,persona:kevin,persona:jordan","M9 — CRM & Retention","open"
+"M10 — Staging Sign-Off","**Gate:** All Lighthouse gates pass. UAT pre-launch signed off.
+
+Lighthouse ≥90 all views. Rules audited. Playwright suite passing. Sentry connected. Backup verified. Runbook complete.
+
+**Sprint:** S18 | **Week:** W36","type:feature,priority:p0,area:frontend","M10 — Staging Sign-Off","open"
+"M11 — Production Launch","**Gate:** All launch-day checklist items checked. Legal gate cleared.
+
+DNS live. eBay prod keys. Staff trained. Legal sign-off received. GA4 goals live. E12/E15/E17/E18 soft-launched via feature flags.
+
+**Sprint:** S19 | **Week:** W38","type:feature,priority:p0","M11 — Production Launch","open"
+"E1: Set up GitHub org, repo & branch protection","Create GitHub org and repo. Configure branch protection rules on `main` and `develop`. Require PR reviews and passing CI before merge.
+
+**Epic:** E1 | **Sprint:** S1 | **Points:** ~5","type:feature,priority:p0,area:backend","M1 — Pipelines & Codespaces","open"
+"E1: Scaffold Vite + React 18 + TypeScript project","Initialise Vite 5 project with React 18 and TypeScript 5. Configure `tsconfig.json`, path aliases, and Tailwind v4 CSS-first setup.
+
+**Epic:** E1 | **Sprint:** S1 | **Points:** ~5","type:feature,priority:p0,area:frontend","M1 — Pipelines & Codespaces","open"
+"E1: Configure GitHub Actions CI/CD pipeline","Create `.github/workflows/ci.yml`: lint → typecheck → Vitest → build. Create `deploy.yml` with manual approval gate for production via GitHub Environments.
+
+**Epic:** E1 | **Sprint:** S1 | **Points:** ~5","type:feature,priority:p0,area:backend","M1 — Pipelines & Codespaces","open"
+"E1: Set up Firebase dev + prod projects","Create two Firebase projects (dev/prod). Configure Firestore, Authentication, Hosting, and Cloud Functions v2. Add environment-specific `.env` files (excluded from git).
+
+**Epic:** E1 | **Sprint:** S1 | **Points:** ~5","type:feature,priority:p0,area:backend","M1 — Pipelines & Codespaces","open"
+"E1: Configure GitHub Codespaces devcontainer","Create `.devcontainer/devcontainer.json` with Node 20, Firebase CLI, Firebase emulator suite, and VS Code extensions pre-installed. Verify cold start < 2 minutes.
+
+**Epic:** E1 | **Sprint:** S1 | **Points:** ~3","type:feature,priority:p1,area:backend","M1 — Pipelines & Codespaces","open"
+"E1: Schedule nightly Firestore backup to GCS","Configure Cloud Scheduler + Cloud Function to export Firestore to a GCS bucket nightly. Add document-count verification step. Document restore procedure in runbook.
+
+**Epic:** E1 | **Sprint:** S1 | **Points:** ~3","type:feature,priority:p0,area:backend","M1 — Pipelines & Codespaces","open"
+"E1: Draft Operational Runbook v1 — all 9 playbooks","Create `/docs/runbook.md` with all 9 incident playbooks: site down, Firestore outage, eBay API failure, Firebase Auth outage, data breach response, backup restore, hotfix deploy, age-gate failure, Sentry alert triage.
+
+**Epic:** E1 | **Sprint:** S1 | **Points:** ~5","type:feature,priority:p0,area:backend","M1 — Pipelines & Codespaces","open"
+"E1: Initialise Docs-as-Code /docs/ folder structure","Commit initial `/docs/` structure: `/docs/epics/`, `/docs/adr/`, `/docs/schema/`, `/docs/project-management/`, `/docs/reports/`. Add README in each folder. Add `.github/ISSUE_TEMPLATE/` scaffolds and `labels.yml`.
+
+**Epic:** E1 | **Sprint:** S1 | **Points:** ~3","type:feature,priority:p0,area:backend","M1 — Pipelines & Codespaces","open"
+"E1: Add GitHub Actions workflows — lint, tests, Lighthouse, schema-validation, docs-validation","Create `lint.yml`, `tests.yml`, `lighthouse.yml`, `schema-validation.yml`, `docs-validation.yml`. Wire all checks into PR required status. Lighthouse CI targets: ≥90 performance, ≥90 accessibility, ≥95 SEO.
+
+**Epic:** E1 | **Sprint:** S1 | **Points:** ~5","type:feature,priority:p0,area:backend","M1 — Pipelines & Codespaces","open"
+"E1: Create GitHub Projects board with custom fields","Set up GitHub Projects board. Add custom fields: Status (Backlog/In Progress/In Review/Done/Blocked), Epic (E01–E19), Priority (P0/P1/P2), View Context (Pawn/Cannabis/Fireworks/All), Sprint (S01–S19), Persona Impact, Compliance Impact, Schema Impact, AI Review Required, QA Status, Deployment Risk.
+
+**Epic:** E1 | **Sprint:** S1 | **Points:** ~2","type:feature,priority:p0,area:backend","M1 — Pipelines & Codespaces","open"
+"E1: Apply full label taxonomy to repository","Apply all labels from `/docs/project-management/labels.yml`: view:pawn, view:cannabis, view:fireworks; type:feature/bug/hotfix/compliance/adr; priority:p0/p1/p2; area:frontend/backend/schema/design/ai/search/inventory/crm; persona:makoonsii/dale/tanya/marie/kevin/sandra/jordan/marcus.
+
+**Epic:** E1 | **Sprint:** S1 | **Points:** ~2","type:feature,priority:p1,area:backend","M1 — Pipelines & Codespaces","open"
+"E2: Define Tailwind v4 base @theme — gold/black palette (Pawn view)","Configure `--color-primary: #C8A14A`, `--color-bg: #080706`. Set `--font-display: Playfair Display`, `--font-body: IM Fell English`. Create `.view-pawn` CSS class. Load Google Fonts.
+
+**Epic:** E2 | **Sprint:** S2 | **Points:** ~5","type:feature,priority:p0,area:design,view:pawn,persona:marcus,persona:jordan","M2 — Three-View Design System","open"
+"E2: Build core Pawn view component library (Button, Badge, Card, Modal, Input, Table)","Create base components scoped to `.view-pawn`. All components must pass WCAG AA contrast. Add Storybook stories for all variant states (default, hover, disabled, error).
+
+**Epic:** E2 | **Sprint:** S2 | **Points:** ~8","type:feature,priority:p0,area:design,view:pawn","M2 — Three-View Design System","open"
+"E2: Configure PWA manifest + Workbox service worker","Create `manifest.json` with per-view icons and theme colours. Configure Workbox for offline shell caching. Test install prompt on mobile.
+
+**Epic:** E2 | **Sprint:** S2 | **Points:** ~3","type:feature,priority:p1,area:frontend","M2 — Three-View Design System","open"
+"E2: Draft Motion Design Spec","Document animation timing, easing curves, transition durations for the dark luxury aesthetic. Define entrance animations for hero, cards, modals. Commit to `/docs/design/motion-spec.md`.
+
+**Epic:** E2 | **Sprint:** S2 | **Points:** ~3","type:feature,priority:p1,area:design,persona:marcus,persona:jordan","M2 — Three-View Design System","open"
+"E2: Draft Photography Brief v1 — dark luxury standard","Create photography brief defining dark luxury standard applicable to all three views. Document lighting, background, props, post-processing requirements. This is the baseline for Marcus persona engagement.
+
+Commit to `/docs/design/photography-brief.md`.
+
+**Epic:** E2 | **Sprint:** S2 | **Points:** ~3","type:feature,priority:p0,area:design,persona:marcus","M2 — Three-View Design System","open"
+"E2: Cannabis view token overrides + component variants","Add `--color-primary: #7B4FA0`, `--color-bg: #1A0D2E`. Fonts: Cormorant Garamond (display) / DM Sans (body). Create `.view-cannabis` class. Build cinematic hero, mood collection card, luxury product card variants.
+
+**Epic:** E2 | **Sprint:** S3 | **Points:** ~8","type:feature,priority:p0,area:design,view:cannabis,persona:marie,persona:marcus","M2 — Three-View Design System","open"
+"E2: Fireworks view token overrides + component variants","Add `--color-primary: #C0392B`, `--color-bg: #1A0A0A`. Fonts: Bebas Neue (display) / Oswald (body). Create `.view-fireworks` class. Build countdown timer, bundle card, urgency badge components.
+
+**Epic:** E2 | **Sprint:** S3 | **Points:** ~8","type:feature,priority:p0,area:design,view:fireworks,persona:tanya","M2 — Three-View Design System","open"
+"E2: Implement ViewContext provider","Create React context that reads the URL prefix (`/pawn`, `/cannabis`, `/fireworks`) and injects the corresponding CSS class on the root element, enabling theme switching without JS conditionals.
+
+**Epic:** E2 | **Sprint:** S3 | **Points:** ~3","type:feature,priority:p0,area:frontend","M2 — Three-View Design System","open"
+"E2: WCAG AA contrast audit — all three view palettes","Run automated contrast checks on all three view palettes. Fix any failures. Document results in `/docs/reports/wcag-audit-sprint3.md`. Integrate axe-core into CI.
+
+**Epic:** E2 | **Sprint:** S3 | **Points:** ~3","type:compliance,priority:p0,area:design","M2 — Three-View Design System","open"
+"E3: Firebase Auth — email/password + Google SSO","Configure Firebase Authentication with email/password and Google SSO providers. Implement AuthContext and ProtectedRoute components.
+
+**Epic:** E3 | **Sprint:** S4 | **Points:** ~5","type:feature,priority:p0,area:backend","M3 — Auth & MFA","open"
+"E3: Role system — admin, manager, inventory_staff, marketing_staff, customer","Implement custom claims for 5 roles. Create Cloud Function to assign/revoke roles. Add role-gated ProtectedRoute variants. Document role matrix in `/docs/project-management/roles.md`.
+
+**Epic:** E3 | **Sprint:** S4 | **Points:** ~5","type:feature,priority:p0,area:backend","M3 — Auth & MFA","open"
+"E3: MFA enforcement — TOTP/SMS mandatory for all staff roles","Enable Firebase Auth MFA APIs. Enforce TOTP or SMS second factor for admin, manager, inventory_staff, marketing_staff roles on first login. MFA bypass must be impossible — this is an acceptance gate for M3.
+
+**Epic:** E3 | **Sprint:** S4 | **Points:** ~8","type:feature,priority:p0,area:backend","M3 — Auth & MFA","open"
+"E3: Session management UI + suspicious login alerts","Build staff-facing session management page (active sessions, revoke). Implement suspicious login detection (new IP/device) with email alert to account owner.
+
+**Epic:** E3 | **Sprint:** S4 | **Points:** ~5","type:feature,priority:p1,area:frontend,area:backend","M3 — Auth & MFA","open"
+"E3: Audit log — write authentication events to Firestore","Write login, logout, role change, MFA enrolment, and suspicious login events to `auditLogs/{id}` collection. Ensure audit logs cannot be deleted by non-admin roles.
+
+**Epic:** E3 | **Sprint:** S4 | **Points:** ~3","type:feature,priority:p0,area:backend","M3 — Auth & MFA","open"
+"E4: Firestore inventory schema v3 — viewTag, viewTags, provenanceNotes","Define and document Firestore `items/{id}` schema: viewTag, viewTags, locationId, isSeasonalItem, bundleIds, merchandisingTags, videoUrl, aiDescription, aiPriceSuggestion, provenanceNotes (new in v5.0 for Marcus). Commit schema to `/docs/schema/inventory.md`.
+
+**Epic:** E4 | **Sprint:** S5 | **Points:** ~5","type:feature,priority:p0,area:schema,persona:marcus,persona:kevin,persona:dale","M4 — Alpha: Three-View Storefront","open"
+"E4: Add Item admin form + intake workflow","Build admin form for creating inventory items. Implement intake workflow: receive → condition grading → photography → pricing → publish. Support all three viewTags.
+
+**Epic:** E4 | **Sprint:** S5 | **Points:** ~8","type:feature,priority:p0,area:frontend,area:inventory","M4 — Alpha: Three-View Storefront","open"
+"E4: Multi-image upload + per-view watermark","Implement multi-image upload to Firebase Storage. Apply per-view watermark overlay on upload. Serve WebP/AVIF via Firebase Hosting CDN.
+
+**Epic:** E4 | **Sprint:** S5 | **Points:** ~5","type:feature,priority:p0,area:frontend,area:inventory","M4 — Alpha: Three-View Storefront","open"
+"E4: Hold system + holdExpiry Cloud Function","Implement item hold/reservation: status → `reserved`, `holdExpiresAt` timestamp. Cloud Function resets expired holds to `active` every 30 minutes. Admin UI shows holds dashboard.
+
+**Epic:** E4 | **Sprint:** S5 | **Points:** ~5","type:feature,priority:p1,area:backend,area:inventory,persona:kevin","M4 — Alpha: Three-View Storefront","open"
+"E4: Barcode/QR generation + searchTokens","Generate QR label per item. Build `searchTokens` array from title/category for prefix search. Expose QR print view in admin.
+
+**Epic:** E4 | **Sprint:** S5 | **Points:** ~5","type:feature,priority:p1,area:inventory","M4 — Alpha: Three-View Storefront","open"
+"E5: Pawn view homepage — hero, trust strip, featured grid, brand narrative, masonry","Build Pawn homepage: art-deco gold/black hero with shimmer headline and Find of the Day rotating showcase. Trust badge strip (Community-owned · eBay verified · Akwesasne). Featured inventory grid (4 active items). Brand narrative callout (Makoonsii trust signal). Masonry discovery section (Sandra impulse browsing).
+
+**Epic:** E5 | **Sprint:** S6 | **Points:** ~8","type:feature,priority:p0,area:frontend,view:pawn,persona:makoonsii,persona:sandra,persona:marcus","M4 — Alpha: Three-View Storefront","open"
+"E5: Pawn shop page — inventory grid, filters, prefix search, item detail","Build Pawn shop page with inventory grid, category filters, prefix search (searchTokens), and sort. Build item detail page: image gallery, condition, pricing, Enquire CTA, hold badge, JSON-LD structured data, GA4 tracking.
+
+**Epic:** E5 | **Sprint:** S6 | **Points:** ~8","type:feature,priority:p0,area:frontend,view:pawn,persona:dale,persona:kevin","M4 — Alpha: Three-View Storefront","open"
+"E5: Cannabis view homepage + shop + item detail — cinematic hero, mood collections, luxury product card","Build Cannabis homepage: cinematic full-bleed hero, mood collection cards (Relax/Focus/Social/Ceremony for Marie), lifestyle editorial strip. Shop page and item detail with macro image gallery and hover reveal. Limited-edition framing for Marcus.
+
+**Epic:** E5 | **Sprint:** S7 | **Points:** ~8","type:feature,priority:p0,area:frontend,view:cannabis,persona:marie,persona:marcus","M4 — Alpha: Three-View Storefront","open"
+"E5: Cannabis 19+ age gate + consent logging","Full-screen 19+ confirmation modal — no bypass. On confirm: write consentLogs doc (IP, timestamp, policy version, viewTag=cannabis). Add `/legal/cannabis` page.
+
+**Epic:** E5 | **Sprint:** S7 | **Points:** ~5","type:compliance,priority:p0,area:frontend,view:cannabis,persona:marie","M4 — Alpha: Three-View Storefront","open"
+"E5: Fireworks view homepage + shop + item detail — countdown timer, event categories, bundle cards","Build Fireworks homepage: animated countdown timer hero (Tanya), event category navigation (Family Night/Display Shows/Sparklers & Kids/Professional), bundle showcase, urgency strip. Shop page and item detail with urgency copy and pickup scheduling CTA.
+
+**Epic:** E5 | **Sprint:** S8 | **Points:** ~8","type:feature,priority:p0,area:frontend,view:fireworks,persona:tanya","M4 — Alpha: Three-View Storefront","open"
+"E5: Fireworks 19+ age gate + consent logging","Full-screen 19+ confirmation modal for /fireworks — no bypass. On confirm: write consentLogs doc (IP, timestamp, policy version, viewTag=fireworks). Add `/legal/fireworks` page.
+
+**Epic:** E5 | **Sprint:** S8 | **Points:** ~3","type:compliance,priority:p0,area:frontend,view:fireworks","M4 — Alpha: Three-View Storefront","open"
+"E5: Mobile-responsive audit — all three views at 375px / 768px / 1280px","Audit all three view homepages, shop pages, and item detail pages at 375px (mobile), 768px (tablet), and 1280px (desktop). Fix all layout breaks. Large touch targets for Makoonsii.
+
+**Epic:** E5 | **Sprint:** S8 | **Points:** ~5","type:feature,priority:p0,area:frontend,persona:makoonsii","M4 — Alpha: Three-View Storefront","open"
+"E6: eBay OAuth + ebayListItem Cloud Function","Implement eBay OAuth token flow. Build `ebayListItem` Cloud Function: map Firestore item fields to eBay listing format, condition mapping, apply cannabis/fireworks local-pickup-only policy.
+
+**Epic:** E6 | **Sprint:** S9 | **Points:** ~8","type:feature,priority:p0,area:backend,persona:dale,persona:kevin","M5 — eBay & Cross-Post","open"
+"E6: ebayPublishOffer, ebaySyncStatus (4h schedule), ebayRefreshToken (daily)","Build scheduled Cloud Functions: `ebaySyncStatus` every 4 hours (sync sold/active status back to Firestore), `ebayRefreshToken` daily. Build `ebayPublishOffer` callable for admin.
+
+**Epic:** E6 | **Sprint:** S9 | **Points:** ~8","type:feature,priority:p0,area:backend","M5 — eBay & Cross-Post","open"
+"E6: Admin cross-post dashboard — eBay toggle, Kijiji draft, Facebook deep-link","Build admin cross-post dashboard: per-item eBay toggle, listing status, Kijiji draft generation, Facebook deep-link. Cannabis/fireworks items auto-flag as local-pickup-only.
+
+**Epic:** E6 | **Sprint:** S9 | **Points:** ~8","type:feature,priority:p1,area:frontend,area:inventory","M5 — eBay & Cross-Post","open"
+"E7: Multi-step pawn form — item details, condition, contact, serial number, anonymous option","Build multi-step pawn submission form: item details → condition → contact method (with anonymous option) → serial number capture. Submit to `pawnRequests/{id}` collection. Run serial number blacklist check on submit.
+
+**Epic:** E7 | **Sprint:** S10 | **Points:** ~8","type:feature,priority:p0,area:frontend,persona:makoonsii,persona:kevin,persona:dale","M7 — Beta: Full Feature Set","open"
+"E7: Admin pawn inbox — status updates, police hold toggle, reply workflow","Build admin pawn inbox: list all pawnRequests, status update (received/quoted/accepted/completed/rejected), police hold toggle (prevents auto-purge), staff reply workflow with email notification to customer.
+
+**Epic:** E7 | **Sprint:** S10 | **Points:** ~8","type:feature,priority:p0,area:frontend,area:backend","M7 — Beta: Full Feature Set","open"
+"E7: Serial number blacklist check Cloud Function","On `pawnRequests` create: run submitted serial number against stolen goods blacklist. Flag result in pawnRequest doc. Alert staff inbox if match found. Document blacklist update procedure in runbook.
+
+**Epic:** E7 | **Sprint:** S10 | **Points:** ~5","type:compliance,priority:p0,area:backend","M7 — Beta: Full Feature Set","open"
+"E8: Click-and-collect full workflow — reserve, staff notification, pickup window, SMS/email","Implement click-and-collect: customer reserves item → item status → `pending_pickup` → staff notification → staff confirms pickup window → SMS + email confirmation sent to customer.
+
+**Epic:** E8 | **Sprint:** S15 | **Points:** ~8","type:feature,priority:p0,area:frontend,area:backend,persona:tanya,persona:kevin","M7 — Beta: Full Feature Set","open"
+"E8: Facebook Messenger, WhatsApp button, Google Maps, Instagram feed","Add Facebook Messenger deep-link, WhatsApp contact button (critical for Marie's anonymous inquiry path), Google Maps embed, Instagram feed widget to relevant pages.
+
+**Epic:** E8 | **Sprint:** S16 | **Points:** ~5","type:feature,priority:p1,area:frontend,persona:marie,persona:sandra","M7 — Beta: Full Feature Set","open"
+"E8: Newsletter CASL double opt-in + reseller registration form","Implement CASL-compliant double opt-in newsletter signup. Per-view subscription (Mailchimp/Buttondown) with viewTag stored in Firestore. Build reseller registration form with staff review workflow.
+
+**Epic:** E8 | **Sprint:** S16 | **Points:** ~5","type:compliance,priority:p1,area:frontend,persona:kevin,persona:tanya","M7 — Beta: Full Feature Set","open"
+"E9: Lighthouse CI gates — ≥90 performance, ≥90 accessibility, ≥95 SEO","Configure Lighthouse CI in GitHub Actions for all three view URLs. Set hard gates: performance ≥90, accessibility ≥90, SEO ≥95. Gate must pass before any production deploy.
+
+**Epic:** E9 | **Sprint:** S16 | **Points:** ~3","type:feature,priority:p0,area:frontend","M10 — Staging Sign-Off","open"
+"E9: Firestore security rules audit","Audit all Firestore security rules. Verify: public read on `items` only for `status=active`, owner-only reads on `users/{uid}`, create-only on `consentLogs`, admin-only on `auditLogs`. Run Firebase emulator security rules test suite.
+
+**Epic:** E9 | **Sprint:** S16 | **Points:** ~5","type:compliance,priority:p0,area:backend","M10 — Staging Sign-Off","open"
+"E9: CSP headers + Firebase App Check + hCaptcha + honeypot + IP rate-limit","Configure Content Security Policy headers via Firebase Hosting. Enable Firebase App Check. Add hCaptcha to pawn form. Add honeypot field. Implement IP-based rate limiting on Cloud Functions.
+
+**Epic:** E9 | **Sprint:** S16 | **Points:** ~5","type:compliance,priority:p0,area:backend","M10 — Staging Sign-Off","open"
+"E9: WebP + AVIF image pipeline","Implement automated WebP and AVIF conversion on image upload via Cloud Function. Serve via Firebase Hosting CDN with appropriate Accept headers.
+
+**Epic:** E9 | **Sprint:** S16 | **Points:** ~3","type:feature,priority:p1,area:backend","M10 — Staging Sign-Off","open"
+"E9: Sentry error monitoring integration","Integrate Sentry into both frontend (React) and Cloud Functions. Configure source map upload on deploy. Set up alert rules for error rate spikes. Test with a deliberate error trigger.
+
+**Epic:** E9 | **Sprint:** S16 | **Points:** ~3","type:feature,priority:p0,area:backend","M10 — Staging Sign-Off","open"
+"E9: Playwright E2E full smoke suite","Build Playwright smoke suite covering: all three view homepages, age gates, item detail, pawn form submission, admin login + MFA, inventory add. Run in CI on every PR to main.
+
+**Epic:** E9 | **Sprint:** S16 | **Points:** ~8","type:feature,priority:p0,area:frontend,area:backend","M10 — Staging Sign-Off","open"
+"E10: Admin analytics dashboard — per-view sales velocity, aging, most viewed","Build admin analytics dashboard: per-view sales velocity, inventory aging, most-viewed items, top categories, pawn conversion funnel. Source data from Firestore + GA4.
+
+**Epic:** E10 | **Sprint:** S13 | **Points:** ~8","type:feature,priority:p1,area:frontend,persona:kevin","M7 — Beta: Full Feature Set","open"
+"E10: UTM attribution per-view dashboard","Track UTM parameters on all three views. Build attribution dashboard in admin: traffic by source (Facebook/eBay/Instagram/Google Maps/TikTok), per-view conversion, customer acquisition cost.
+
+**Epic:** E10 | **Sprint:** S13 | **Points:** ~5","type:feature,priority:p1,area:backend","M7 — Beta: Full Feature Set","open"
+"E10: Feature flag system — Firestore config/featureFlags + useFeatureFlag hook","Implement feature flag key-value store in `config/featureFlags`. Build `useFeatureFlag(key)` React hook that reads flags on app init. Use for E12/E15/E17/E18 soft rollout at launch.
+
+**Epic:** E10 | **Sprint:** S10 | **Points:** ~3","type:feature,priority:p0,area:backend,area:frontend","M7 — Beta: Full Feature Set","open"
+"E10: Audit log viewer in admin portal","Build admin audit log viewer: filterable list of all auth events, inventory changes, role changes, pawn status updates. Read from `auditLogs` collection. Admin-only access.
+
+**Epic:** E10 | **Sprint:** S10 | **Points:** ~5","type:feature,priority:p1,area:frontend","M7 — Beta: Full Feature Set","open"
+"E11: PIPEDA data retention + purgeExpiredData Cloud Function","Implement monthly `purgeExpiredData` Cloud Function: auto-purge pawnRequests (no police hold) after 90 days, reseller leads after 1 year. Police hold = true blocks purge. Consent logs and audit logs NOT auto-purged.
+
+**Epic:** E11 | **Sprint:** S7 | **Points:** ~5","type:compliance,priority:p0,area:backend,persona:marie","M7 — Beta: Full Feature Set","open"
+"E11: Jurisdiction notices — indigenous legal consultation gate","Create `/legal/` pages with jurisdiction disclosure copy for all three views. Copy must be reviewed and approved by counsel before launch. **HARD GATE for M11.** Schedule for Sprint 16 (Week 32). If delayed, launch date adjusts.
+
+**Epic:** E11 | **Sprint:** S16 | **Points:** ~3","type:compliance,priority:p0","M11 — Production Launch","open"
+"E11: Accessibility compliance program — /accessibility page, keyboard audit, NVDA/VoiceOver QA, axe-core CI","Build `/accessibility` page. Conduct full keyboard navigation audit on all three views. Test with NVDA (Windows) and VoiceOver (Mac/iOS). Integrate axe-core into CI. Fix all critical failures.
+
+**Epic:** E11 | **Sprint:** S16 | **Points:** ~8","type:compliance,priority:p0,area:frontend","M7 — Beta: Full Feature Set","open"
+"E11: Stolen goods blacklist — admin management UI","Build admin UI for managing the serial number blacklist. Allow admin to add/remove/search entries. Integrate with pawn form check Cloud Function.
+
+**Epic:** E11 | **Sprint:** S10 | **Points:** ~3","type:compliance,priority:p1,area:frontend","M7 — Beta: Full Feature Set","open"
+"E12: Saved searches + category alerts + favourites/wishlist","Build saved searches (savedSearches/{id} collection), category alert subscriptions, and favourites/wishlist. Marcus: track vintage/rare-find/limited-edition search terms. Kevin: electronics category subscriptions.
+
+**Epic:** E12 | **Sprint:** S19 | **Points:** ~5","type:feature,priority:p1,area:frontend,area:crm,persona:kevin,persona:dale,persona:marcus","M9 — CRM & Retention","open"
+"E12: Notification centre + SMS alerts (Twilio)","Build in-app notification centre. Integrate Twilio for SMS alerts. New inventory matching a saved search triggers SMS/email within 60 seconds of listing. Kevin and Dale primary targets.
+
+**Epic:** E12 | **Sprint:** S19 | **Points:** ~8","type:feature,priority:p1,area:backend,persona:kevin,persona:dale,persona:tanya","M9 — CRM & Retention","open"
+"E12: Seasonal reminders + pickup confirmation via SMS","Implement seasonal reminder campaigns (CRM-triggered). Send pickup confirmation SMS to customers when click-and-collect window is confirmed. Primary persona: Tanya.
+
+**Epic:** E12 | **Sprint:** S19 | **Points:** ~5","type:feature,priority:p1,area:backend,persona:tanya,persona:marie","M9 — CRM & Retention","open"
+"E13: Staff picks admin UI + trending score Cloud Function","Build staff picks admin UI (primary discovery surface for Sandra and Marcus). Implement `calculateTrendingScore` Cloud Function. Add related items logic on item detail. Recently viewed (localStorage).
+
+**Epic:** E13 | **Sprint:** S11 | **Points:** ~8","type:feature,priority:p0,area:frontend,area:backend,persona:sandra,persona:marcus","M6 — Merchandising Live","open"
+"E13: Collection pages, bundle recommendations, just-arrived + rare find auto-tagging","Build collection pages (viewTag-filtered). Bundle recommendations for Tanya (fireworks). Auto-tag: `just-arrived` (< 48h). `rare-find` tag for Marcus scarcity signal. Cannabis mood collections: Relax/Focus/Social/Ceremony.
+
+**Epic:** E13 | **Sprint:** S11 | **Points:** ~8","type:feature,priority:p1,area:frontend,area:inventory,persona:tanya,persona:marcus,persona:marie","M6 — Merchandising Live","open"
+"E13: Quick-view modal — opens in < 200ms, cinematic imagery","Build quick-view modal for browse pages. Must open within 200ms (acceptance criterion, Sprint 12). Cinematic imagery, evocative copy. Marcus: luxury product presentation. Sandra: browse without losing place.
+
+**Epic:** E13 | **Sprint:** S12 | **Points:** ~5","type:feature,priority:p0,area:frontend,persona:marcus,persona:sandra","M6 — Merchandising Live","open"
+"E13: Algolia integration — typo-tolerance, fuzzy, synonyms, per-view faceting, admin index management","Integrate Algolia from Sprint 12. Configure typo-tolerance, fuzzy matching, synonyms for collectibles. Per-view faceting (pawn/cannabis/fireworks). Build admin Algolia index management UI. **Acceptance criterion: search < 300ms.**
+
+**Epic:** E13 | **Sprint:** S12 | **Points:** ~8","type:feature,priority:p0,area:search,persona:dale","M6 — Merchandising Live","open"
+"E13: Masonry discovery section (Sandra) + vertical video support (cannabis/fireworks)","Build masonry grid discovery section on Pawn homepage for Sandra's treasure-hunt browsing. Add vertical video support to Cannabis and Fireworks item detail pages. Infinite scroll on shop pages.
+
+**Epic:** E13 | **Sprint:** S12 | **Points:** ~5","type:feature,priority:p1,area:frontend,persona:sandra,persona:jordan","M6 — Merchandising Live","open"
+"E14: Campaign scheduler admin UI — no code deploy required","Build campaign scheduler admin UI. Non-technical staff can activate/deactivate campaigns without code deploy. Homepage takeover renders from `config/campaigns` within 60 seconds of activation.
+
+**Epic:** E14 | **Sprint:** S15 | **Points:** ~8","type:feature,priority:p0,area:frontend,area:backend,persona:tanya","M7 — Beta: Full Feature Set","open"
+"E14: Holiday campaign templates — Canada Day, Diwali, New Year, Summer BBQ","Create at least 4 pre-built campaign templates. Each template includes: homepage hero override, countdown timer, category boost rules, event inquiry form variant. Admin can activate with one click.
+
+**Epic:** E14 | **Sprint:** S15 | **Points:** ~5","type:feature,priority:p1,area:frontend,persona:tanya","M7 — Beta: Full Feature Set","open"
+"E14: Countdown timer hero component + category boost logic","Build auto-updating countdown timer hero (Tanya's primary urgency trigger). Implement category boost: seasonal items float to top of shop page. Event inquiry form for bulk/display orders.
+
+**Epic:** E14 | **Sprint:** S8 | **Points:** ~5","type:feature,priority:p0,area:frontend,view:fireworks,persona:tanya","M4 — Alpha: Three-View Storefront","open"
+"E15: Customer profiles — purchaseHistory, inquiryHistory, lifetimeValue, segments","Build `customers/{uid}` Firestore documents. Track: purchaseHistory, inquiryHistory, lifetimeValue, first/last seen, categoryPreference, viewPreference, engagementScore. Cloud Functions write; manager reads.
+
+**Epic:** E15 | **Sprint:** S18 | **Points:** ~8","type:feature,priority:p0,area:crm,area:backend,persona:kevin,persona:marcus,persona:jordan","M9 — CRM & Retention","open"
+"E15: VIP flag + reseller tiers (bronze/silver/gold) — Marcus, Kevin, Jordan primary targets","Implement `vipFlag` and `resellerTier` fields. VIP triggers: Marcus (deep engagement, long session, high photography-click rate), Kevin (high-frequency enquiries), Jordan (editorial engagement). Admin can manually apply VIP flag.
+
+**Epic:** E15 | **Sprint:** S18 | **Points:** ~5","type:feature,priority:p1,area:crm,persona:marcus,persona:kevin,persona:jordan","M9 — CRM & Retention","open"
+"E15: Automated follow-ups — 48h pending staff reminder, 72h quoted customer gentle follow-up","Cloud Functions: 48h after pawnRequest created with no staff response → staff reminder email. 72h after quote sent with no customer response → gentle customer follow-up email. `autoFollowUp` tested as M9 gate.
+
+**Epic:** E15 | **Sprint:** S18 | **Points:** ~5","type:feature,priority:p1,area:backend,area:crm","M9 — CRM & Retention","open"
+"E15: CRM dashboard /admin/crm — full customer profile view, engagement scoring","Build `/admin/crm` dashboard: customer list (searchable/filterable by segment, VIP, viewTag), individual customer profile view with full history, engagement score, VIP flag toggle, reseller tier selector.
+
+**Epic:** E15 | **Sprint:** S18 | **Points:** ~8","type:feature,priority:p1,area:frontend,area:crm","M9 — CRM & Retention","open"
+"E15: Marcus cross-view browsing flag — multi-view sessions tracked in CRM","Set `crossViewBrowsing: true` flag on `customers/{uid}` when a session includes interactions across 2+ view namespaces (pawn + cannabis + fireworks). Trigger `engagementScore +15`. Surface in CRM dashboard.
+
+**Epic:** E15 | **Sprint:** S18 | **Points:** ~3","type:feature,priority:p1,area:backend,area:crm,persona:marcus","M9 — CRM & Retention","open"
+"E16: Return/dispute tickets, dispute tracking, refund log, eBay dispute workflow","Build post-sale operations: return/dispute ticket creation, status tracking (open/investigating/resolved), refund log, staff resolution notes. eBay dispute workflow integration (pull dispute from eBay API, respond via admin).
+
+**Epic:** E16 | **Sprint:** S17 | **Points:** ~8","type:feature,priority:p1,area:frontend,area:backend,persona:kevin,persona:dale","M8 — AI & Post-Sale","open"
+"E17: Social proof widgets — transaction counters, years in business, testimonials, recently sold strip","Build social proof widget set: transaction counters, years in business badge, testimonials module, recently sold strip (primary trigger for Dale and Kevin). Recently sold data sourced from Firestore `onItemSold` events.
+
+**Epic:** E17 | **Sprint:** S14 | **Points:** ~5","type:feature,priority:p1,area:frontend,persona:dale,persona:kevin,persona:sandra","M7 — Beta: Full Feature Set","open"
+"E17: Live activity feed — rate-limited, privacy-safe","Build live activity feed showing what other users are currently viewing. Rate-limited to prevent performance impact. Privacy-safe: no PII, generalised as 'Someone from Cornwall is viewing this'. Primary for Sandra's sense of shared discovery.
+
+**Epic:** E17 | **Sprint:** S14 | **Points:** ~5","type:feature,priority:p1,area:frontend,area:backend,persona:sandra","M7 — Beta: Full Feature Set","open"
+"E17: Scarcity indicators — limited edition flag for Marcus + urgency modules","Build scarcity/limited-edition flag display (Marcus responds to rarity, not manufactured urgency). Add low-stock urgency module. Hold countdown badge on reserved items. All scarcity signals must be authentic — not fake.
+
+**Epic:** E17 | **Sprint:** S14 | **Points:** ~5","type:feature,priority:p1,area:frontend,persona:marcus","M7 — Beta: Full Feature Set","open"
+"E17: A/B experiment framework — Firebase Remote Config + GA4","Implement A/B experiment framework using Firebase Remote Config for variant assignment and GA4 custom events for conversion tracking. Document experiment runbook in `/docs/project-management/ab-testing.md`.
+
+**Epic:** E17 | **Sprint:** S14 | **Points:** ~5","type:feature,priority:p2,area:backend,area:frontend","M7 — Beta: Full Feature Set","open"
+"E18: generateAIDescription Cloud Function — GPT-4o, staff review gate","Build `generateAIDescription` callable Cloud Function. Prompt GPT-4o with item details + photography context. Staff reviews before publish — no auto-publish. For Marcus items: prompt must include provenance, cultural context, and collecting significance.
+
+**Epic:** E18 | **Sprint:** S17 | **Points:** ~8","type:feature,priority:p0,area:ai,area:backend,persona:marcus,persona:jordan","M8 — AI & Post-Sale","open"
+"E18: eBay title optimization + auto-tagging (min 3 suggestions) + category recommendation","Extend AI assistant: eBay-optimised title generation (character limits, keyword density). Auto-tagging with minimum 3 tag suggestions per item. Category recommendation from item description. Staff can accept/edit all suggestions.
+
+**Epic:** E18 | **Sprint:** S17 | **Points:** ~5","type:feature,priority:p1,area:ai,area:inventory,persona:dale","M8 — AI & Post-Sale","open"
+"E18: Price suggestion — eBay sold comps for Dale + duplicate detection","Build price suggestion feature: query eBay sold comps API, return price range (not a specific price). Display to staff as guidance only. Implement duplicate detection: flag items with similar title/category already in Firestore.
+
+**Epic:** E18 | **Sprint:** S17 | **Points:** ~5","type:feature,priority:p1,area:ai,area:backend,persona:dale","M8 — AI & Post-Sale","open"
+"E19: Editorial CMS — blog/article admin UI + articles Firestore collection","Build editorial CMS: admin article editor (title, body, viewTag, slug, seoMeta, publishedAt). Public article list and detail pages per view. Include RSS feed. `articles/{id}` Firestore collection.
+
+**Epic:** E19 | **Sprint:** S19 | **Points:** ~8","type:feature,priority:p0,area:frontend,area:backend,persona:marcus,persona:jordan,persona:sandra","M8 — AI & Post-Sale","open"
+"E19: Brand narrative — About page, founder story, Akwesasne identity, Warriors of Akwesasne series","Write and publish: About page with founder story, Akwesasne identity section (Dapper. Debonair. Distinctly Akwesasne.). Launch Warriors of Akwesasne editorial series. **All Kanien'kéha phrases require community review and approval before publication.** Marcus and Makoonsii primary audiences.
+
+**Epic:** E19 | **Sprint:** S19 | **Points:** ~5","type:feature,priority:p0,area:frontend,persona:makoonsii,persona:marcus","M8 — AI & Post-Sale","open"
+"E19: Finds of the Week — launch edition published at M11","Publish first Finds of the Week editorial at launch. Feature the shop owner's personal selections across all three views. Curated weekly highlights format. Marcus and Sandra primary audience. Must be live at M11.
+
+**Epic:** E19 | **Sprint:** S19 | **Points:** ~3","type:feature,priority:p0,area:frontend,persona:marcus,persona:sandra","M11 — Production Launch","open"
+"E19: Local SEO landing pages (≥6) + FAQ engine + buying guides","Create minimum 6 local SEO landing pages (Cornwall, Akwesasne, surrounding region — per view). Build FAQ engine (admin-editable Q&A). Publish initial buying guides (collectibles, cannabis wellness, fireworks safety).
+
+**Epic:** E19 | **Sprint:** S19 | **Points:** ~8","type:feature,priority:p1,area:frontend,persona:dale,persona:jordan","M11 — Production Launch","open"
+"Launch: DNS cutover — A/AAAA records → Firebase prod hosting","Execute DNS cutover. Point A/AAAA records to Firebase prod hosting IPs. Verify SSL certificate auto-provisioned. Test all three view URLs in production.
+
+**Sprint:** S19 | **Week:** W38","type:feature,priority:p0","M11 — Production Launch","open"
+"Launch: eBay production OAuth credentials + test listing","Switch eBay integration to production OAuth credentials. Publish a test listing and immediately end it. Verify status syncs back to Firestore.
+
+**Sprint:** S19 | **Week:** W38","type:feature,priority:p0,area:backend","M11 — Production Launch","open"
+"Launch: SendGrid sending domain DKIM/DMARC verification","Verify SendGrid sending domain with DKIM and DMARC records. Send a test pawn inquiry email and confirm receipt. Check spam score.
+
+**Sprint:** S19 | **Week:** W38","type:feature,priority:p0,area:backend","M11 — Production Launch","open"
+"Launch: Staff MFA enrolment — all admin/manager/inventory_staff accounts","Ensure all staff accounts have MFA enrolled before go-live. Record confirmation in launch-day checklist. Developer + staff must co-verify.
+
+**Sprint:** S19 | **Week:** W38","type:compliance,priority:p0","M11 — Production Launch","open"
+"Launch: Record staff Loom training — all three views + admin portal","Record Loom walkthrough covering: Pawn view staff workflow, Cannabis view staff workflow, Fireworks view + campaign scheduler, Admin portal (inventory, pawn inbox, eBay, CRM).
+
+**Sprint:** S19 | **Week:** W38","type:feature,priority:p0","M11 — Production Launch","open"
+"Launch: Legal jurisdiction sign-off — indigenous commerce + Kanien'kéha language review","Obtain written sign-off from legal counsel on all jurisdiction disclosure copy. Obtain community sign-off on all Kanien'kéha phrases before publication. **HARD GATE — launch cannot proceed without this.**
+
+**Sprint:** S16–S19","type:compliance,priority:p0","M11 — Production Launch","open"
+"Launch: 7-day post-launch monitoring schedule — Sentry, GA4, Firebase Console","Set up daily post-launch monitoring for 7 days: Sentry error rate review, GA4 conversion goal verification per view, Firebase Console (Firestore reads/writes, function invocations, hosting bandwidth). Document findings in `/docs/reports/`.
+
+**Sprint:** S19 | **Week:** W38–W39","type:feature,priority:p0,area:backend","M11 — Production Launch","open"
+"ADR-001: Adopt Docs-as-Code with GitHub Projects as PM layer","**Status:** Accepted
+
+Document the architectural decision to use Docs-as-Code philosophy with Markdown files in the repository as the single source of truth. GitHub Projects as the primary PM orchestration layer. No external PM tools (Jira/Asana).
+
+Commit to `/docs/adr/ADR-001-docs-as-code.md`.
+
+**Epic:** E1","type:adr,priority:p0","M1 — Pipelines & Codespaces","open"
+"ADR-002: Three-view architecture with shared Firebase backend","**Status:** Accepted
+
+Document the decision to implement three distinct public-facing views (Pawn/Cannabis/Fireworks) sharing a unified Firebase backend, inventory system, and admin portal. ViewContext + CSS custom properties for theming.
+
+Commit to `/docs/adr/ADR-002-three-view-architecture.md`.
+
+**Epic:** E2","type:adr,priority:p0","M2 — Three-View Design System","open"
+"ADR-003: Algolia over Firestore full-text search","**Status:** Accepted
+
+Document the decision to adopt Algolia from Sprint 12 (moved earlier per gap analysis). Rationale: typo-tolerance and faceted filtering are critical for collectibles discovery. Firestore prefix tokens used as interim solution in Sprints 1–11.
+
+Commit to `/docs/adr/ADR-003-algolia-search.md`.
+
+**Epic:** E13","type:adr,priority:p1","M6 — Merchandising Live","open"
+"ADR-004: Staff-side AI only — no customer-facing AI in v5.0","**Status:** Accepted
+
+Document the decision to restrict AI (OpenAI GPT-4o) to staff-facing operations only (description generation, tagging, pricing suggestions). No customer-facing AI chatbot in this build.
+
+Commit to `/docs/adr/ADR-004-staff-only-ai.md`.
+
+**Epic:** E18","type:adr,priority:p1","M8 — AI & Post-Sale","open"

@@ -1,0 +1,292 @@
+CONTEXT EXPORT - 2026-05-13T00:08:00.764Z
+Mode: Targeted (/docs/)
+
+### TABLE OF CONTENTS ###
+- docs/ACTIVE_SPRINT.md
+- docs/COMPLIANCE.md
+- docs/CONTEXT_DUMP.md
+- docs/GOVERNANCE.md
+- docs/PERSONAS.md
+- docs/adr/00_ADR_TEMPLATE.md
+- docs/product/epics/00_EPIC_TEMPLATE.md
+- docs/project-management/GITHUB_PROJECTS_STRUCTURE.md
+- docs/project-management/ISSUE_WORKFLOWS.md
+- docs/project-management/SPRINT_PROCESS.md
+- docs/schema/firestore-schema.md
+
+### FILE CONTENTS ###
+
+<file path="docs/ACTIVE_SPRINT.md">
+# 🏃 Active Sprint
+
+**Sprint Name/Number:** Sprint X
+**Dates:** YYYY-MM-DD to YYYY-MM-DD
+**Goal:** [Define the primary objective for this sprint]
+
+## Sprint Backlog
+*(List GitHub Issue links here or embed the project board view)*
+
+* [ ] Issue #1 - Describe task
+* [ ] Issue #2 - Describe task
+
+## Carryover from Last Sprint
+* [ ] Issue #X
+
+## Notes & Blockers
+* 
+
+</file>
+
+<file path="docs/COMPLIANCE.md">
+# 🛡️ Compliance & Security Governance
+
+This document outlines the strict regulatory and compliance requirements that govern The Pawn Shop platform, particularly concerning the regulated verticals.
+
+## 1. Age-Gating Requirements
+* **Cannabis View (`.view-cannabis`):** Must strictly enforce a 19+ (or legally mandated age) age gate before rendering *any* product data or promotional material.
+* **Fireworks View (`.view-fireworks`):** Must strictly enforce an 18+ (or legally mandated age) age gate.
+* **Implementation:** Age gates must be validated at the route level. AI assistants must never bypass these checks during feature development.
+
+## 2. Data Privacy & PIPEDA
+* **Personally Identifiable Information (PII):** Customer PII (e.g., IDs collected for age verification) must be handled with extreme care.
+* **Retention:** PII must not be retained longer than legally required. Follow the documented data retention schedules (TBD in Schema docs).
+* **Logging:** Never log PII, raw IDs, or sensitive customer transaction details in standard analytics, error tracking (e.g., Crashlytics), or console logs.
+
+## 3. Audit Trails
+* All actions taken by staff (e.g., overriding a price, approving an age gate manually) must be logged in the `audit_logs` Firestore collection with an immutable timestamp and the staff member's authenticated UID.
+
+</file>
+
+<file path="docs/CONTEXT_DUMP.md">
+# 🧠 Context Dump
+
+This file serves as the mandatory starting point for all AI coding assistants and new developers to understand the project architecture and business context.
+
+## Business Overview
+The Pawn Shop is a multi-vertical application serving the Dapper-Debonair Akwesasne identity. It operates across three distinct business verticals (views):
+1. **Pawn:** Standard pawn shop operations.
+2. **Cannabis:** Cannabis retail (Requires strict compliance & age gating).
+3. **Fireworks:** Fireworks retail (Requires compliance & age gating).
+
+## Architectural Guidelines
+* **Docs-as-Code:** The `/docs/` directory is the canonical source of truth.
+* **Theming:** The application relies on strict CSS token overrides for theming across verticals (`.view-pawn`, `.view-cannabis`, `.view-fireworks`). Do not use inline JavaScript conditionals for styling.
+* **Database:** Cloud Firestore. Schema must strictly adhere to `/docs/schema/firestore-schema.md`. No hallucinating fields.
+
+## Core Technologies
+*(Update as stack decisions are finalized via ADRs)*
+* Frontend: React / Vite
+* Backend/Database: Firebase (Firestore, Auth, Functions)
+
+</file>
+
+<file path="docs/GOVERNANCE.md">
+---
+title: Platform Governance & Documentation Standards
+status: active
+owner: platform-team
+---
+
+# 🏛️ Platform Governance
+
+This document defines the engineering operating system for The Pawn Shop. It outlines the source-of-truth hierarchy, how documentation is maintained, and the rules of engagement for both human developers and AI coding assistants.
+
+## 1. The Source of Truth Hierarchy
+To prevent architectural drift and context fragmentation, this repository operates on a strict Docs-as-Code philosophy. The hierarchy of truth is as follows:
+
+1. **Markdown Documentation (`/docs/`)**: The absolute, canonical source of truth for all product requirements, schemas, and architectural decisions.
+2. **GitHub Issues**: The execution trackers. Issues must link to and execute what is defined in the Markdown docs.
+3. **GitHub Projects**: The orchestration and status-tracking layer.
+4. **Pull Requests**: The implementation of the documented requirements.
+
+**Rule:** Code does not dictate the architecture; the documentation dictates the code. If the code and the documentation disagree, the code is considered a bug until an architectural change is formally approved.
+
+## 2. Documentation Workflows
+
+### Proposing a New Feature (Epics)
+1. Do not start writing code.
+2. Create a new Epic file in `/docs/product/epics/` using `00_EPIC_TEMPLATE.md`.
+3. Define the Acceptance Criteria, the persona impact, and the schema changes.
+4. Open a "Docs-First PR" to get the Epic approved.
+5. Once merged, create a GitHub Issue linking to the Epic to begin implementation.
+
+### Updating the Schema
+1. The Firestore schema is governed by the files in `/docs/schema/`.
+2. No developer or AI assistant may invent, add, or modify a Firestore collection or field without first updating the schema documentation.
+3. Schema changes require mandatory review to ensure compliance with PIPEDA and age-gate data retention policies.
+
+## 3. AI Coding Assistant Rules
+AI tools (e.g., Copilot, Cursor, Windsurf) are deeply integrated into this workflow. To maintain safety and consistency, all AI sessions must follow these rules:
+
+* **Mandatory Context:** Every new AI coding session MUST begin by loading `CONTEXT_DUMP.md` and `PERSONAS.md`.
+* **Zero-Hallucination Schema:** AI assistants are strictly forbidden from guessing database fields. They must reference the documented schema.
+* **ViewContext Enforcement:** AI assistants must not use inline JavaScript conditionals for theming. They must strictly adhere to the `.view-pawn`, `.view-cannabis`, and `.view-fireworks` CSS token overrides.
+* **Documentation Updates:** When an AI assistant completes a feature, it must be prompted to review and update the corresponding Epic file to mark the implementation steps as complete.
+
+## 4. Architectural Decision Records (ADRs)
+Whenever a significant technical decision is made (e.g., choosing a new third-party integration, changing the state management pattern, or altering the routing strategy), it must be recorded in `/docs/adr/`. 
+
+ADRs prevent the team from repeatedly debating the same decisions and provide critical historical context for AI tools.
+
+## 5. Compliance & Security Governance
+* **Age Gates & Privacy:** Any code modifying the `/cannabis` or `/fireworks` views must be cross-referenced with `COMPLIANCE.md`. 
+* **PII Restrictions:** Personally Identifiable Information must never be logged in standard analytics or audit logs. All CRM and compliance logs must follow the retention schedules defined in the documentation.
+</file>
+
+<file path="docs/PERSONAS.md">
+# 👥 User Personas
+
+This document outlines the core user personas for The Pawn Shop application. AI assistants and developers must consider these personas when designing UI, planning features, and writing code.
+
+## 1. Dale (The Regular)
+* **Demographic:** 45, Local resident.
+* **Verticals Used:** Primarily Pawn, occasionally Cannabis.
+* **Tech-Savvy:** Low to Medium. Needs clear, high-contrast UI and straightforward navigation.
+* **Goals:** Quick transactions, easy browsing of inventory, checking loan statuses.
+
+## 2. Marie (The Compliance Officer / Manager)
+* **Demographic:** 35, Detail-oriented.
+* **Verticals Used:** All (Admin view).
+* **Tech-Savvy:** High. Uses the platform for reporting and oversight.
+* **Goals:** Ensuring age-gate logs are correct, managing inventory across verticals, generating compliance reports for PIPEDA.
+
+## 3. Tanya (The First-Time Tourist)
+* **Demographic:** 28, Visiting the area.
+* **Verticals Used:** Cannabis, Fireworks.
+* **Tech-Savvy:** High (Mobile primary).
+* **Goals:** Exploring what's available, quick purchases, needs to understand legal limits and verify age seamlessly on her phone.
+
+</file>
+
+<file path="docs/adr/00_ADR_TEMPLATE.md">
+# ADR [Number]: [Title]
+
+**Date:** YYYY-MM-DD
+**Status:** [Proposed | Accepted | Rejected | Deprecated | Superseded]
+**Authors:** [Names]
+
+## Context
+What is the problem we are trying to solve? What are the constraints and forces acting upon this decision? (Keep it factual and objective).
+
+## Decision
+What is the change that we are making? 
+
+## Rationale
+Why did we choose this specific solution over other alternatives? What were the trade-offs?
+
+## Consequences
+What becomes easier or more difficult because of this change? (Consider technical debt, performance, team training, dependencies, etc.)
+
+</file>
+
+<file path="docs/product/epics/00_EPIC_TEMPLATE.md">
+---
+epic_id: EXX
+github_issue: 
+status: planned
+sprint: 
+priority: P1
+owner: platform-team
+views:
+  - pawn
+  - cannabis
+  - fireworks
+schema_impact: false
+compliance_review: required
+ai_review: required
+---
+
+# 📁 Epic [ID]: [Name]
+
+**Phase:** [1-5]
+
+## 1. Executive Summary & Persona Focus
+* **Primary Personas:** [Dale, Marie, Tanya, etc.]
+* **Business Goal:** How does this advance the Dapper-Debonair Akwesasne identity?
+
+## 2. Acceptance Criteria (Definition of Done)
+* [ ] **Functional:** * [ ] **Cross-View Compliance:** (How does this look in Gold vs Purple vs Red?)
+* [ ] **Accessibility/SEO:** * [ ] **Discretion:** (Does this respect privacy rules?)
+
+## 3. Schema & Rules Impact
+* **Firestore Collections:** * **Security Rules:** ## 4. AI Implementation Guidelines
+* Provide specific instructions for the AI on how to build this component, citing `CONTEXT_DUMP.md`.
+
+## 5. QA & Runbook Considerations
+* What is the fallback if this system fails?
+
+</file>
+
+<file path="docs/project-management/GITHUB_PROJECTS_STRUCTURE.md">
+# 📊 GitHub Projects Structure
+
+The GitHub Project board is the execution orchestration layer. It does not replace Markdown documentation.
+
+## Custom Fields
+* **Status:** Todo, In Progress, In Review, Done
+* **Epic:** Text mapping to Epic ID (e.g., E06)
+* **Priority:** P0 (Blocker), P1 (High), P2 (Standard)
+* **View Context:** Multi-select (Pawn, Cannabis, Fireworks)
+* **Sprint:** Iteration field
+* **Compliance Impact:** Yes/No
+* **Schema Impact:** Yes/No
+
+All issues should link directly to their canonical Markdown Epic in `/docs/product/epics/`.
+
+</file>
+
+<file path="docs/project-management/ISSUE_WORKFLOWS.md">
+# 🔄 Issue & PR Workflows
+
+## The Golden Path
+1. **Idea:** Discussed in GitHub Discussions.
+2. **Design:** Documented in `/docs/product/epics/` via PR.
+3. **Execution:** GitHub Issue created, linked to Epic, added to Sprint.
+4. **Development:** PR opened against Issue.
+5. **Review:** PR merges, Issue closes automatically (`Closes #123`).
+6. **Release:** Added to `/docs/reports/release-notes/`.
+
+</file>
+
+<file path="docs/project-management/SPRINT_PROCESS.md">
+# 🏃 Sprint Process
+Sprints are 2-week iterations.
+
+## Planning
+* Review `/docs/ACTIVE_SPRINT.md`.
+* Ensure all GitHub Issues have an Epic ID and Size estimation.
+* Update GitHub Project Iteration field.
+
+## Review
+* Output logged to `/docs/reports/sprint-reviews/`.
+* Retrospective logged to `/docs/reports/retrospectives/`.
+
+</file>
+
+<file path="docs/schema/firestore-schema.md">
+# 🗄️ Firestore Schema Definitions
+
+**CRITICAL RULE:** No developer or AI assistant may invent, add, or modify a Firestore collection or field without first updating this document and getting it approved.
+
+## `users` (Collection)
+* `uid` (String, Document ID): Firebase Auth UID.
+* `role` (String): e.g., "customer", "admin", "staff".
+* `createdAt` (Timestamp)
+
+## `products` (Collection)
+* `id` (String, Document ID)
+* `vertical` (String): "pawn", "cannabis", or "fireworks".
+* `name` (String)
+* `price` (Number)
+* `inStock` (Boolean)
+* `metadata` (Map): Vertical-specific details.
+
+## `audit_logs` (Collection)
+*(Used for compliance tracking)*
+* `id` (String, Document ID)
+* `action` (String)
+* `performedBy` (String): User UID.
+* `timestamp` (Timestamp)
+* `details` (Map): Action specifics. No PII allowed here unless encrypted.
+
+</file>
