@@ -1,17 +1,22 @@
 ---
 epic_id: EXX
-github_issue: 
-status: planned
-sprint: 
-priority: P1
+title: ""
+github_issue:            # Epic tracker issue number in GitHub
+github_milestone: ""     # e.g. "M1 — Pipelines & Codespaces"
+status: planned          # planned | in-progress | implemented | deprecated
+sprint:                  # e.g. S1
+priority: P1             # P0 | P1 | P2
 owner: platform-team
 views:
   - pawn
   - cannabis
   - fireworks
+personas: []             # e.g. [marcus, dale]
 schema_impact: false
 compliance_review: required
+compliance_reviewed: false
 ai_review: required
+child_issues: []         # GitHub issue numbers for all EXX: task issues
 ---
 
 # 📁 Epic [ID]: [Name]

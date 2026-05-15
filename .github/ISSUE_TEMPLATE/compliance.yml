@@ -1,0 +1,89 @@
+name: Compliance Task
+description: Age-gate, PIPEDA, accessibility, jurisdiction, or security compliance work
+title: "[COMPLIANCE] "
+labels: ["type:compliance"]
+body:
+  - type: input
+    id: epic
+    attributes:
+      label: Related Epic
+      description: Which Epic does this belong to? (e.g., E11)
+    validations:
+      required: true
+
+  - type: textarea
+    id: requirement
+    attributes:
+      label: Compliance Requirement
+      description: What regulation, standard, or policy does this address? Be specific (e.g., "PIPEDA s.5(3) — data minimisation on pawn form").
+    validations:
+      required: true
+
+  - type: dropdown
+    id: compliance_type
+    attributes:
+      label: Compliance Category
+      options:
+        - Age Gate (19+ cannabis)
+        - Age Gate (19+ fireworks)
+        - PIPEDA / Data Retention
+        - WCAG AA Accessibility
+        - Akwesasne Jurisdiction
+        - Security / CSP / App Check
+        - CASL (Email / SMS)
+        - Stolen Goods / Serial Number
+    validations:
+      required: true
+
+  - type: dropdown
+    id: views
+    attributes:
+      label: Affected Views
+      multiple: true
+      options:
+        - Pawn
+        - Cannabis
+        - Fireworks
+        - Admin / Staff
+        - All Views
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: What must be true for this issue to be closed?
+      placeholder: |
+        - [ ] ...
+        - [ ] ...
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: compliance_checklist
+    attributes:
+      label: Pre-Submit Checklist
+      options:
+        - label: COMPLIANCE.md has been reviewed
+          required: true
+        - label: No PII is stored without documented justification
+          required: true
+        - label: Legal / counsel review scheduled if this is jurisdiction-impacting
+        - label: Kanien'kéha phrases (if any) have community review scheduled
+
+  - type: input
+    id: sprint
+    attributes:
+      label: Sprint
+      description: Target sprint (e.g., S7)
+    validations:
+      required: false
+
+  - type: input
+    id: points
+    attributes:
+      label: Story Points
+      description: Estimated effort (1–13)
+    validations:
+      required: false

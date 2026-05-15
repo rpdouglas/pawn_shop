@@ -1,0 +1,610 @@
+# The Pawn Shop — Docs-as-Code & GitHub Synchronisation Strategy
+
+*Prepared: May 2026*
+
+---
+
+## Part 1 — Audit: What You Have Now
+
+### The CSV Issue Inventory (110 Issues)
+
+Your current issue set is well-structured and follows a clear three-tier hierarchy:
+
+| Tier | Count | Pattern | Example |
+|---|---|---|---|
+| **Milestone Issues** | 11 | `M1 — …` | `M1 — Pipelines & Codespaces` |
+| **Epic Task Issues** | 88 | `EX: Task name` | `E2: WCAG AA contrast audit` |
+| **Standalone Issues** | 11 | Launch / ADR / misc | `ADR-001: Adopt Docs-as-Code` |
+
+**Label taxonomy (24 labels across 5 namespaces):**
+
+- `type:` — feature, compliance, adr
+- `priority:` — p0, p1, p2
+- `area:` — ai, backend, crm, design, frontend, inventory, schema, search
+- `view:` — pawn, cannabis, fireworks
+- `persona:` — dale, marie, tanya, jordan, kevin, marcus, makoonsii, sandra
+
+**19 Epics** (E1–E19) across **11 Milestones** (M1–M11), with all issues linked back to both an Epic ID and a Sprint in their body text (`**Epic:** E2 | **Sprint:** S3 | **Points:** ~3`).
+
+### What's Working Well
+
+- Label namespacing with `:` is excellent — filterable and machine-readable
+- Issues carry their Epic + Sprint context in the body, making them self-documenting
+- Compliance issues use `type:compliance` consistently — crucial for audit trails
+- ADRs are tracked as issues, which puts them on the board and in history
+- Milestone issues act as "gate" definitions with explicit pass/fail criteria
+
+### Gaps and Drift Risks Identified
+
+1. **No programmatic link between `/docs/product/epics/EXX.md` and the GitHub Issues** — they reference each other by convention (`**Epic:** E2`) but nothing enforces or validates this
+2. **`ACTIVE_SPRINT.md` is a blank template** — it won't stay in sync with the GitHub Project board automatically
+3. **The Firestore schema doc has no CI guard** — a developer can add a field in code without the doc being updated; nothing catches this
+4. **Issue bodies embed Sprint/Points in freetext** — these aren't machine-readable GitHub Project custom fields yet, which means reporting requires manual parsing
+5. **`docs/PERSONAS.md` has 3 personas; issues reference 8** — jordan, kevin, marcus, makoonsii, and sandra exist in labels but not in the personas doc
+
+---
+
+## Part 2 — How Other Docs-as-Code Systems Handle This
+
+Before recommending your setup, it's worth understanding how mature teams solve this:
+
+### The Backstage / Spotify Model
+Backstage (Spotify's open-source developer portal) defines a `catalog-info.yaml` at the root of every repo. This acts as a machine-readable index that links code ownership, API specs, documentation, and runbooks. Their key insight: **the canonical record lives in the repo, and the portal is a read view of it** — not the other way around. You never update the portal directly; you update the YAML and the portal re-renders.
+
+**Applicable to you:** Your Epic markdown files should be the canonical record. GitHub Issues are the read/execution view.
+
+### The Linear + Markdown Model
+Linear (the PM tool) stores issues in their database but lets teams export and sync via webhooks. Teams like Vercel use a pattern where Linear issues reference a `docs/specs/` filepath. On merge, a GitHub Action reads the spec and updates the Linear issue's description. **The document wins; the tracker follows.**
+
+**Applicable to you:** Same principle — on PR merge to an Epic file, a GitHub Action should update the linked issue.
+
+### The Diataxis Framework
+Diataxis (used by Django, Gatsby, and others) separates documentation into four types: Tutorials, How-Tos, Explanations, and References. The key lesson for project governance docs: **every doc should have exactly one job** and be linked to a clear owner and lifecycle state.
+
+**Applicable to you:** Your current `/docs/` structure conflates some of these. The proposal below separates them clearly.
+
+### The ADR + RFC Pattern (AWS, Google)
+AWS uses Architecture Decision Records with a status lifecycle (`Proposed → Accepted → Deprecated → Superseded`). Google uses a similar "Design Doc" system where every design doc has a mandatory `Status:` field. Both require that **closing an ADR issue in the tracker requires updating the markdown status field** — enforced by a PR template check.
+
+**Applicable to you:** Your 4 ADR issues are a great start. The enforcement is missing.
+
+---
+
+## Part 3 — Recommended GitHub Setup
+
+### 3.1 Repository Structure
+
+```
+.github/
+  workflows/
+    ci.yml                    # Lint, test, Lighthouse
+    docs-sync.yml             # ← NEW: Epic ↔ Issue sync
+    schema-guard.yml          # ← NEW: Firestore schema validation
+    compliance-check.yml      # ← NEW: Age-gate compliance scan
+  ISSUE_TEMPLATE/
+    feature.md
+    compliance.md
+    adr.md
+  PULL_REQUEST_TEMPLATE.md    # ← NEW: Requires Epic link + docs update checkbox
+  
+docs/
+  ACTIVE_SPRINT.md            # Auto-generated by workflow — do not edit manually
+  GOVERNANCE.md
+  COMPLIANCE.md
+  PERSONAS.md                 # Expand to include all 8 personas
+  CONTEXT_DUMP.md
+  adr/
+    00_ADR_TEMPLATE.md
+    ADR-001-docs-as-code.md
+    ADR-002-three-view-firebase.md
+    ADR-003-algolia.md
+    ADR-004-staff-ai-only.md
+  product/
+    epics/
+      00_EPIC_TEMPLATE.md
+      E01-pipelines-codespaces.md
+      E02-three-view-design.md
+      … (one file per Epic)
+  schema/
+    firestore-schema.md
+  reports/
+    sprint-reviews/
+    retrospectives/
+    release-notes/
+  scripts/                    # ← NEW: All sync tooling lives here
+    sync-issues.mjs
+    validate-schema.mjs
+    generate-sprint.mjs
+```
+
+### 3.2 GitHub Projects Custom Fields
+
+Your current field plan is solid. Add these two:
+
+| Field | Type | Values |
+|---|---|---|
+| Status | Single select | Todo, In Progress, In Review, Done |
+| Epic | Text | E01, E02 … |
+| Priority | Single select | P0, P1, P2 |
+| View Context | Multi-select | Pawn, Cannabis, Fireworks |
+| Sprint | Iteration | 2-week cycles |
+| Compliance Impact | Single select | Yes, No |
+| Schema Impact | Single select | Yes, No |
+| **Story Points** ← new | Number | 1–13 |
+| **Doc Status** ← new | Single select | Draft, Review, Approved, Stale |
+
+`Doc Status` is the key addition — it creates a visible signal when an issue has been implemented but the Epic doc hasn't been updated to mark steps complete (a gap your current GOVERNANCE.md requires but can't enforce).
+
+### 3.3 Issue Templates
+
+Create three templates under `.github/ISSUE_TEMPLATE/`:
+
+**`feature.md`** — for all `type:feature` issues:
+```yaml
+---
+name: Feature Task
+about: Implementation task linked to a documented Epic
+labels: 'type:feature'
+---
+## Epic Link
+<!-- REQUIRED: Link to /docs/product/epics/EXX-name.md -->
+Epic: E__
+
+## Task Description
+<!-- What exactly needs to be built -->
+
+## Acceptance Criteria
+- [ ] 
+
+## Compliance Check
+- [ ] Does not touch /cannabis or /fireworks without COMPLIANCE.md review
+- [ ] No PII logged
+
+## Metadata
+**Sprint:** S__ | **Points:** ~__
+```
+
+**`compliance.md`** — gates compliance work behind extra checkboxes, including PIPEDA and age-gate confirmation.
+
+**`adr.md`** — links to `/docs/adr/` and requires the markdown file to exist before the issue can be closed.
+
+### 3.4 PR Template
+
+```markdown
+## Description
+
+## Epic Reference
+- [ ] This PR is linked to Epic: E__
+- [ ] The corresponding `/docs/product/epics/EXX.md` has been updated
+
+## Compliance
+- [ ] If this touches `.view-cannabis` or `.view-fireworks`, COMPLIANCE.md was reviewed
+- [ ] No PII is logged anywhere in this diff
+- [ ] Schema changes are reflected in `/docs/schema/firestore-schema.md`
+
+## Testing
+- [ ] Unit tests pass
+- [ ] Lighthouse score unaffected
+```
+
+---
+
+## Part 4 — Programmatic Sync: Keeping Docs and Issues in Lockstep
+
+This is the core of what you asked for. Here's a complete system using GitHub Actions and a lightweight Node script, with no external dependencies beyond the GitHub API.
+
+### 4.1 The Sync Architecture
+
+```
+┌─────────────────────────┐     ┌──────────────────────────────┐
+│  /docs/product/epics/   │────▶│  docs-sync.yml (GH Action)   │
+│  EXX-name.md            │     │                              │
+│                         │◀────│  • On push to docs/          │
+│  Frontmatter:           │     │  • On schedule (nightly)     │
+│    epic_id: E02         │     │  • On workflow_dispatch       │
+│    github_issue: 27     │     │                              │
+│    status: in-progress  │     └──────────────────────────────┘
+│    sprint: S3           │              │         ▲
+│    compliance_review: ✓ │              │         │
+└─────────────────────────┘              ▼         │
+                                  ┌─────────────────┐
+                                  │  sync-issues.mjs │
+                                  │                  │
+                                  │  Reads Epic MD   │
+                                  │  Calls GH API    │
+                                  │  Updates issue:  │
+                                  │  • body          │
+                                  │  • labels        │
+                                  │  • milestone     │
+                                  │  • project card  │
+                                  └─────────────────┘
+                                          │
+                                          ▼
+                                  ┌─────────────────┐
+                                  │  GitHub Issue    │
+                                  │  GitHub Project  │
+                                  │  card fields     │
+                                  └─────────────────┘
+```
+
+**Two-way sync rules (to prevent infinite loops):**
+
+- **Docs → Issues:** Changes to Epic markdown frontmatter propagate to issue labels, milestone, and project card fields. This is the authoritative direction.
+- **Issues → Docs:** Only the `status` field propagates back (when an issue is closed, the Epic's `status` frontmatter is updated to `implemented`). Nothing else flows back — the doc always wins for content.
+
+### 4.2 Epic Frontmatter Schema (Updated)
+
+Every Epic file gets a richer frontmatter block that becomes the machine-readable source of truth:
+
+```yaml
+---
+epic_id: E02
+title: "Three-View Design System"
+github_issue: 27           # ← The Epic tracker issue number
+github_milestone: "M2 — Three-View Design System"
+status: in-progress        # planned | in-progress | implemented | deprecated
+sprint: S3
+priority: P0
+owner: platform-team
+views:
+  - pawn
+  - cannabis
+  - fireworks
+personas:
+  - marie
+  - tanya
+schema_impact: false
+compliance_review: required
+compliance_reviewed: false  # ← Set to true after COMPLIANCE.md cross-ref
+child_issues:              # ← Issue numbers of all EXX: tasks
+  - 30
+  - 31
+  - 32
+  - 33
+---
+```
+
+### 4.3 The Sync Script (`docs/scripts/sync-issues.mjs`)
+
+```javascript
+#!/usr/bin/env node
+// docs/scripts/sync-issues.mjs
+// Run: node sync-issues.mjs [--dry-run]
+//
+// Reads all Epic markdown frontmatter and syncs to GitHub Issues + Projects.
+// Requires: GITHUB_TOKEN env var with repo + project scope.
+
+import { readdir, readFile } from 'fs/promises';
+import { join } from 'path';
+
+const REPO = process.env.GITHUB_REPOSITORY; // 'org/repo'
+const TOKEN = process.env.GITHUB_TOKEN;
+const DRY_RUN = process.argv.includes('--dry-run');
+
+// ── 1. Parse frontmatter from all Epic files ──────────────────────────────
+
+async function loadEpics(dir = 'docs/product/epics') {
+  const files = (await readdir(dir))
+    .filter(f => f.match(/^E\d+/) && f.endsWith('.md'));
+
+  return Promise.all(files.map(async f => {
+    const raw = await readFile(join(dir, f), 'utf8');
+    const match = raw.match(/^---\n([\s\S]+?)\n---/);
+    if (!match) throw new Error(`No frontmatter in ${f}`);
+    // Parse YAML frontmatter (use 'js-yaml' in production)
+    return { file: f, raw, frontmatter: parseYaml(match[1]) };
+  }));
+}
+
+// ── 2. GitHub API helpers ─────────────────────────────────────────────────
+
+async function ghFetch(path, opts = {}) {
+  const res = await fetch(`https://api.github.com${path}`, {
+    ...opts,
+    headers: {
+      Authorization: `Bearer ${TOKEN}`,
+      'Content-Type': 'application/json',
+      'X-GitHub-Api-Version': '2022-11-28',
+      ...opts.headers,
+    },
+  });
+  if (!res.ok) throw new Error(`GitHub API ${path}: ${res.status}`);
+  return res.json();
+}
+
+async function updateIssue(number, body) {
+  if (DRY_RUN) { console.log(`[DRY RUN] Would update issue #${number}`, body); return; }
+  return ghFetch(`/repos/${REPO}/issues/${number}`, {
+    method: 'PATCH',
+    body: JSON.stringify(body),
+  });
+}
+
+async function setIssueLabels(number, labels) {
+  if (DRY_RUN) { console.log(`[DRY RUN] Would set labels on #${number}:`, labels); return; }
+  return ghFetch(`/repos/${REPO}/issues/${number}/labels`, {
+    method: 'PUT',
+    body: JSON.stringify({ labels }),
+  });
+}
+
+// ── 3. Derive labels from frontmatter ─────────────────────────────────────
+
+function epicToLabels(fm) {
+  const labels = ['type:feature'];
+  if (fm.priority) labels.push(`priority:${fm.priority.toLowerCase()}`);
+  if (fm.views) fm.views.forEach(v => labels.push(`view:${v}`));
+  if (fm.personas) fm.personas.forEach(p => labels.push(`persona:${p}`));
+  if (fm.compliance_review === 'required') labels.push('compliance:required');
+  if (fm.schema_impact) labels.push('area:schema');
+  return labels;
+}
+
+// ── 4. Detect and report drift ────────────────────────────────────────────
+
+async function detectDrift(epic, liveIssue) {
+  const drift = [];
+  const expectedLabels = epicToLabels(epic.frontmatter);
+  const liveLabels = liveIssue.labels.map(l => l.name);
+  
+  const missing = expectedLabels.filter(l => !liveLabels.includes(l));
+  const extra = liveLabels.filter(l => !expectedLabels.includes(l) && l.startsWith('view:'));
+  
+  if (missing.length) drift.push(`Missing labels: ${missing.join(', ')}`);
+  if (extra.length) drift.push(`Unexpected view labels: ${extra.join(', ')}`);
+  if (liveIssue.state === 'closed' && epic.frontmatter.status !== 'implemented') {
+    drift.push(`Issue closed but Epic status is "${epic.frontmatter.status}" not "implemented"`);
+  }
+  return drift;
+}
+
+// ── 5. Main sync loop ─────────────────────────────────────────────────────
+
+async function main() {
+  const epics = await loadEpics();
+  const report = { synced: [], drifted: [], errors: [] };
+
+  for (const epic of epics) {
+    const { frontmatter: fm } = epic;
+    if (!fm.github_issue) { console.warn(`No github_issue in ${epic.file}`); continue; }
+
+    try {
+      const liveIssue = await ghFetch(`/repos/${REPO}/issues/${fm.github_issue}`);
+      const drift = await detectDrift(epic, liveIssue);
+
+      if (drift.length > 0) {
+        report.drifted.push({ file: epic.file, issue: fm.github_issue, drift });
+        // Apply corrections
+        await setIssueLabels(fm.github_issue, epicToLabels(fm));
+        if (fm.github_milestone) {
+          // look up milestone number and set it
+        }
+        console.log(`✅ Synced ${epic.file} → #${fm.github_issue} (fixed ${drift.length} drift(s))`);
+      } else {
+        report.synced.push(epic.file);
+        console.log(`✓  ${epic.file} in sync`);
+      }
+    } catch (err) {
+      report.errors.push({ file: epic.file, error: err.message });
+      console.error(`✗  ${epic.file}: ${err.message}`);
+    }
+  }
+
+  // Write drift report to docs/reports/
+  console.log('\n── Sync Report ──');
+  console.log(`Synced: ${report.synced.length} | Drifted: ${report.drifted.length} | Errors: ${report.errors.length}`);
+  if (report.drifted.length > 0) {
+    console.log('\nDrift detected:');
+    report.drifted.forEach(d => {
+      console.log(`  ${d.file} (#${d.issue}):`);
+      d.drift.forEach(msg => console.log(`    • ${msg}`));
+    });
+    if (!DRY_RUN) process.exit(1); // Fail CI on drift
+  }
+}
+
+main().catch(err => { console.error(err); process.exit(1); });
+```
+
+### 4.4 GitHub Actions Workflows
+
+**`docs-sync.yml`** — runs on every push touching `docs/`:
+
+```yaml
+name: Docs ↔ Issues Sync
+
+on:
+  push:
+    paths:
+      - 'docs/product/epics/**.md'
+      - 'docs/schema/**.md'
+  schedule:
+    - cron: '0 6 * * 1-5'   # Nightly Mon–Fri at 6am UTC
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        type: boolean
+        default: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: write
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      
+      - name: Sync Epic docs → GitHub Issues
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          node docs/scripts/sync-issues.mjs ${{ inputs.dry_run == true && '--dry-run' || '' }}
+
+      - name: Regenerate ACTIVE_SPRINT.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node docs/scripts/generate-sprint.mjs
+
+      - name: Commit updated ACTIVE_SPRINT.md
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'chore(docs): auto-sync ACTIVE_SPRINT.md [skip ci]'
+          file_pattern: 'docs/ACTIVE_SPRINT.md'
+```
+
+**`schema-guard.yml`** — prevents schema drift:
+
+```yaml
+name: Schema Guard
+
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'functions/**'
+
+jobs:
+  schema-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check for undocumented Firestore fields
+        run: node docs/scripts/validate-schema.mjs
+        # Greps source for .collection() and .doc() calls,
+        # extracts field names, and cross-checks against
+        # docs/schema/firestore-schema.md.
+        # Fails with a diff if undocumented fields are found.
+```
+
+**`compliance-check.yml`** — age gate guard:
+
+```yaml
+name: Compliance Check
+
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+
+jobs:
+  age-gate-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Detect .view-cannabis or .view-fireworks changes
+        id: view-check
+        run: |
+          CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -E '\.(view-cannabis|view-fireworks)' || true)
+          echo "changed=$CHANGED" >> $GITHUB_OUTPUT
+      - name: Require compliance label if regulated views changed
+        if: steps.view-check.outputs.changed != ''
+        run: |
+          # Check that PR has 'compliance:reviewed' label via GH API
+          # Fail if not present
+          echo "⚠️ Regulated view changes detected. PR must have 'compliance:reviewed' label."
+```
+
+### 4.5 Auto-Generated `ACTIVE_SPRINT.md`
+
+The `generate-sprint.mjs` script queries the GitHub Projects API for the current active iteration and writes:
+
+```markdown
+# 🏃 Active Sprint
+
+**Sprint:** S3 | **Dates:** 2026-05-12 to 2026-05-26
+**Goal:** Complete Three-View Design System (M2 gate: WCAG AA pass)
+
+> ⚠️ *This file is auto-generated. Do not edit manually.*
+> *Last synced: 2026-05-12T06:00:00Z*
+
+## Sprint Backlog (13 issues)
+
+| # | Title | Epic | Priority | Points | Status |
+|---|---|---|---|---|---|
+| [#30](…) | WCAG AA contrast audit | E02 | P0 | 3 | In Progress |
+| [#31](…) | Cannabis token overrides | E02 | P0 | 5 | Todo |
+…
+
+## P0 Blockers
+* None currently
+
+## Compliance Items This Sprint
+* [#30] WCAG AA — `type:compliance`
+
+## Carryover from S2
+* [#22] Tailwind v4 base @theme (partial — in review)
+```
+
+---
+
+## Part 5 — What to Build First (Sequenced Roadmap)
+
+Don't try to automate everything at once. Here's the order that delivers the most value per hour of setup:
+
+### Phase 1 — Foundation (E1, already in your backlog)
+**Issue E1: "Add GitHub Actions workflows — docs-validation"** is already in your CSV. Scope this to:
+
+1. Create all 24 labels via a `setup-labels.mjs` script (run once)
+2. Import the 110 CSV issues via the GitHub API (run once)
+3. Create the 11 Milestones
+4. Install the three Issue Templates and PR Template
+
+### Phase 2 — Epic Frontmatter (this sprint or next)
+1. Retrofit all Epic markdown files with the full frontmatter schema above
+2. Run `sync-issues.mjs --dry-run` to verify the mapping
+3. Enable `docs-sync.yml` in production mode
+
+### Phase 3 — Schema Guard
+1. Build and enable `schema-guard.yml`
+2. This prevents the most dangerous class of drift: undocumented Firestore fields
+
+### Phase 4 — Auto Sprint Doc
+1. Enable `generate-sprint.mjs`
+2. Mark `ACTIVE_SPRINT.md` as auto-generated with a header warning
+3. Remove it from the "edit this file" workflow
+
+### Phase 5 — Compliance Automation
+1. Enable `compliance-check.yml`
+2. Add the `compliance:reviewed` label to the taxonomy
+3. Update `COMPLIANCE.md` to document the enforcement mechanism
+
+---
+
+## Part 6 — Personas Gap
+
+Your `PERSONAS.md` defines 3 personas (Dale, Marie, Tanya) but your issue labels reference 8:
+
+| Label | In PERSONAS.md? |
+|---|---|
+| `persona:dale` | ✅ |
+| `persona:marie` | ✅ |
+| `persona:tanya` | ✅ |
+| `persona:marcus` | ❌ |
+| `persona:jordan` | ❌ |
+| `persona:kevin` | ❌ |
+| `persona:makoonsii` | ❌ |
+| `persona:sandra` | ❌ |
+
+**Action:** Expand `PERSONAS.md` with all 8 personas before Phase 2. The sync script can be extended to validate that no issue references a persona label that doesn't exist in PERSONAS.md — another class of drift caught automatically.
+
+---
+
+## Part 7 — Decision Reference
+
+| Decision | Recommendation | Why |
+|---|---|---|
+| Who owns a conflict between Issue and Epic doc? | **Epic doc wins, always** | Per GOVERNANCE.md §1 — docs are the source of truth |
+| Should issues auto-close when Epic status → implemented? | No — require manual close with `Closes #N` in PR | Prevents accidental closes from sync bot |
+| Should the sync bot open PRs or commit directly? | **Direct commit** to `docs/` for `ACTIVE_SPRINT.md`; **PR** for any Epic frontmatter change | ACTIVE_SPRINT is volatile; Epic changes need review |
+| Where do Story Points live? | GitHub Projects custom field (Number) + echoed in issue body | Keeps them searchable in the board and human-readable |
+| Should `ACTIVE_SPRINT.md` be hand-editable? | No — mark it auto-generated; use the board for edits | Eliminates the most common source of drift |
+| Frequency of nightly sync? | Mon–Fri 6am UTC | Catches overnight drift before standup |
+
+---
+
+*This document is the proposed ADR for the docs-sync system. Once approved, file as `ADR-005: Epic ↔ Issue Programmatic Sync` in `/docs/adr/`.*

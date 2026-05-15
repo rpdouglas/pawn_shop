@@ -1,0 +1,77 @@
+name: Architecture Decision Record (ADR)
+description: Document an architectural or significant technical decision
+title: "ADR-XXX: "
+labels: ["type:adr"]
+body:
+  - type: input
+    id: adr_number
+    attributes:
+      label: ADR Number
+      description: Next sequential ADR number (e.g., ADR-005). Check /docs/adr/ for the current highest.
+    validations:
+      required: true
+
+  - type: input
+    id: doc_path
+    attributes:
+      label: Document Path
+      description: Path to the ADR markdown file that must exist before this issue can be closed (e.g., /docs/adr/ADR-005-epic-issue-sync.md)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: status
+    attributes:
+      label: Status
+      options:
+        - Proposed
+        - Accepted
+        - Rejected
+        - Deprecated
+        - Superseded
+    validations:
+      required: true
+
+  - type: input
+    id: epic
+    attributes:
+      label: Related Epic
+      description: Which Epic owns this ADR? (e.g., E1)
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What problem are we solving? What constraints exist? Keep it factual.
+    validations:
+      required: true
+
+  - type: textarea
+    id: decision
+    attributes:
+      label: Decision
+      description: What is the change we are making?
+    validations:
+      required: true
+
+  - type: textarea
+    id: consequences
+    attributes:
+      label: Consequences
+      description: What becomes easier or harder? What technical debt does this introduce or retire?
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: adr_checklist
+    attributes:
+      label: ADR Checklist
+      options:
+        - label: Markdown file committed to /docs/adr/ with correct filename
+          required: true
+        - label: Status field is set in the markdown file
+          required: true
+        - label: GOVERNANCE.md cross-referenced if this affects team workflow
+        - label: Superseded ADR updated with "Superseded by ADR-XXX" note (if applicable)
