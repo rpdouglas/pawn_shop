@@ -1,0 +1,60 @@
+name: Schema Guard
+
+on:
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'src/**'
+      - 'functions/src/**'
+      - 'docs/schema/**'
+
+jobs:
+  schema-check:
+    name: Validate Firestore schema documentation
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write   # to post a summary comment on violations
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Check for undocumented Firestore collections
+        id: schema-check
+        run: node docs/scripts/validate-schema.mjs
+        # Exits 1 if any .collection() / doc() reference is missing from
+        # docs/schema/firestore-schema.md — fails the PR.
+
+      - name: Post violation summary as PR comment
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = `## ❌ Schema Guard Failed
+
+            One or more Firestore collection references in this PR are not documented in \`docs/schema/firestore-schema.md\`.
+
+            **To fix:**
+            1. Open \`docs/schema/firestore-schema.md\`
+            2. Add a \`###\` section for each undocumented collection
+            3. Define all fields, types, and security rule requirements
+            4. Re-push — the check will re-run automatically
+
+            See the **Schema Guard** job log for the specific violations.
+
+            > This check enforces the rule in \`docs/schema/firestore-schema.md\`:
+            > *"No developer or AI assistant may add, rename, or remove a Firestore collection or field without first updating this document."*
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner:        context.repo.owner,
+              repo:         context.repo.repo,
+              body,
+            });

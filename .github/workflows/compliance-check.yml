@@ -1,0 +1,117 @@
+name: Compliance Check
+
+on:
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'src/**'
+      - 'functions/src/**'
+
+jobs:
+  regulated-view-check:
+    name: Detect regulated view changes
+    runs-on: ubuntu-latest
+    permissions:
+      contents:      read
+      pull-requests: write   # to post comment + read labels
+      issues:        read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # full history needed for git diff
+
+      - name: Detect .view-cannabis or .view-fireworks changes
+        id: view-check
+        run: |
+          BASE="${{ github.base_ref }}"
+          HEAD="${{ github.sha }}"
+
+          # Files changed in this PR that contain regulated view class names
+          CHANGED_FILES=$(git diff --name-only "origin/${BASE}...${HEAD}" \
+            -- 'src/**' 'functions/src/**' 2>/dev/null || true)
+
+          # Grep changed file contents for regulated CSS class references
+          REGULATED=""
+          if [[ -n "$CHANGED_FILES" ]]; then
+            REGULATED=$(echo "$CHANGED_FILES" | xargs grep -l \
+              --include="*.ts" --include="*.tsx" --include="*.js" --include="*.jsx" --include="*.css" \
+              -e "view-cannabis" -e "view-fireworks" \
+              2>/dev/null || true)
+          fi
+
+          if [[ -n "$REGULATED" ]]; then
+            echo "regulated=true"  >> "$GITHUB_OUTPUT"
+            echo "files<<EOF"      >> "$GITHUB_OUTPUT"
+            echo "$REGULATED"      >> "$GITHUB_OUTPUT"
+            echo "EOF"             >> "$GITHUB_OUTPUT"
+            echo "::notice::Regulated view changes detected — compliance review required."
+          else
+            echo "regulated=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::No regulated view changes detected."
+          fi
+
+      - name: Fetch PR labels
+        id: labels
+        if: steps.view-check.outputs.regulated == 'true'
+        uses: actions/github-script@v7
+        with:
+          result-encoding: string
+          script: |
+            const { data: pr } = await github.rest.pulls.get({
+              owner:       context.repo.owner,
+              repo:        context.repo.repo,
+              pull_number: context.issue.number,
+            });
+            const labels = pr.labels.map(l => l.name);
+            return labels.includes('compliance:reviewed') ? 'yes' : 'no';
+
+      - name: Fail if compliance:reviewed label is missing
+        if: steps.view-check.outputs.regulated == 'true' && steps.labels.outputs.result == 'no'
+        run: |
+          echo "::error::This PR touches regulated view code (.view-cannabis / .view-fireworks)"
+          echo "::error::but does not have the 'compliance:reviewed' label."
+          echo ""
+          echo "Files with regulated view references:"
+          echo "${{ steps.view-check.outputs.files }}"
+          exit 1
+
+      - name: Post compliance notice
+        if: steps.view-check.outputs.regulated == 'true' && steps.labels.outputs.result == 'no'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const files = `${{ steps.view-check.outputs.files }}`
+              .trim().split('\n').map(f => `- \`${f}\``).join('\n');
+
+            const body = `## ⚠️ Compliance Review Required
+
+            This PR modifies regulated view code (\`.view-cannabis\` or \`.view-fireworks\`) and requires a compliance review before it can be merged.
+
+            **Changed files with regulated references:**
+            ${files}
+
+            **To unblock this PR:**
+            1. Review the changes against \`docs/COMPLIANCE.md\`
+            2. Verify age-gate logic is intact and no PII is logged
+            3. Have a reviewer with compliance authority add the \`compliance:reviewed\` label
+            4. The check will re-run automatically when the label is added
+
+            > This gate is enforced by \`compliance-check.yml\` per ADR-002 and ADR-005.
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner:        context.repo.owner,
+              repo:         context.repo.repo,
+              body,
+            });
+
+      - name: Pass — compliance label present
+        if: steps.view-check.outputs.regulated == 'true' && steps.labels.outputs.result == 'yes'
+        run: echo "✅ compliance:reviewed label is present — check passed."
+
+      - name: Pass — no regulated view changes
+        if: steps.view-check.outputs.regulated == 'false'
+        run: echo "✅ No regulated view changes in this PR."

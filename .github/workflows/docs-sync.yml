@@ -1,0 +1,65 @@
+name: Docs ↔ Issues Sync
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'docs/product/epics/**.md'
+      - 'docs/schema/**.md'
+  schedule:
+    # Nightly Mon–Fri at 6am UTC — catches overnight drift before standup
+    - cron: '0 6 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (detect drift but do not apply corrections)'
+        type: boolean
+        default: true
+
+jobs:
+  sync:
+    name: Sync Epic docs → GitHub Issues
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write        # update labels and milestones
+      contents: write      # commit ACTIVE_SPRINT.md back to the repo
+      pull-requests: read  # read PR metadata for compliance checks
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Full history needed so git-auto-commit can push
+          fetch-depth: 0
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Sync Epic docs → GitHub Issues
+        env:
+          GITHUB_TOKEN:      ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          DRY_RUN_FLAG=""
+          if [[ "${{ inputs.dry_run }}" == "true" && "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            DRY_RUN_FLAG="--dry-run"
+          fi
+          node docs/scripts/sync-issues.mjs $DRY_RUN_FLAG
+
+      - name: Regenerate ACTIVE_SPRINT.md
+        # Always regenerate — runs even if sync found no drift
+        env:
+          GITHUB_TOKEN:          ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY:     ${{ github.repository }}
+          GITHUB_PROJECT_NUMBER: ${{ vars.GITHUB_PROJECT_NUMBER }}
+        run: node docs/scripts/generate-sprint.mjs
+
+      - name: Commit updated ACTIVE_SPRINT.md
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'chore(docs): auto-sync ACTIVE_SPRINT.md [skip ci]'
+          file_pattern:   'docs/ACTIVE_SPRINT.md docs/reports/sprint-reviews/sync-report-*.json'
+          commit_user_name:  'github-actions[bot]'
+          commit_user_email: 'github-actions[bot]@users.noreply.github.com'
