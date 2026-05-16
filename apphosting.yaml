@@ -1,0 +1,17 @@
+# apphosting.yaml
+# Configuration for Firebase App Hosting
+
+# Note: Local variable and secret injections can be verified during local development.
+# If you are serving full-stack Server-Side Rendered framework elements natively, 
+# test locally via `npx -y firebase-tools@latest emulators:start` to verify the emulated runtime behaves before production pushes.
+
+env:
+  - variable: VITE_API_URL
+    value: https://api.staging.example.com
+    availability:
+      - BUILD
+      - RUNTIME
+
+secrets:
+  # - variable: API_KEY
+  #   secret: my-api-key

@@ -25,6 +25,9 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Compile Data Connect Queries
+        run: npx -y firebase-tools@latest dataconnect:compile
+
       - name: Check for undocumented Firestore collections
         id: schema-check
         run: node docs/scripts/validate-schema.mjs
